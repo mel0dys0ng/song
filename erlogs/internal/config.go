@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/mel0dys0ng/song/metas"
-	"github.com/mel0dys0ng/song/utils/systems"
+	"github.com/mel0dys0ng/song/utils/sys"
 )
 
 const (
@@ -70,7 +70,7 @@ func (c *Config) GetFilePath() string {
 	file := fmt.Sprintf("%s/%s.log", c.GetDir(), c.GetFileName())
 	path, err := filepath.Abs(file)
 	if err != nil {
-		systems.Panic(err.Error())
+		sys.Panic(err.Error())
 	}
 	return path
 }
