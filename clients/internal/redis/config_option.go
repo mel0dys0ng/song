@@ -49,7 +49,7 @@ type Option struct {
 func buildRedisOptions(config *Config) *redis.Options {
 	return &redis.Options{
 		Network:               config.Network,
-		Addr:                  sljces.New(config.Addrs).First(""),
+		Addr:                  sljces.First(config.Addrs, ""),
 		ClientName:            config.ClientName,
 		Username:              config.Username,
 		Password:              config.Password,

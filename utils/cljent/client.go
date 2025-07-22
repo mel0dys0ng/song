@@ -199,7 +199,7 @@ func (c *ClientInfo) String() string {
 
 func (c *ClientInfo) Md5() string {
 	if c != nil {
-		return crypto.Md5(c.String())
+		return crypto.MD5(c.String())
 	}
 	return ""
 }

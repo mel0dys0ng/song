@@ -7,10 +7,10 @@ import (
 	"regexp"
 	"strings"
 
-	"git.dreamsky.cn/song/utils/aob"
-	"git.dreamsky.cn/song/utils/files"
-	"git.dreamsky.cn/song/utils/ip"
-	"git.dreamsky.cn/song/utils/systems"
+	"github.com/mel0dys0ng/song/utils/aob"
+	"github.com/mel0dys0ng/song/utils/files"
+	"github.com/mel0dys0ng/song/utils/ip"
+	"github.com/mel0dys0ng/song/utils/systems"
 )
 
 const (
@@ -79,6 +79,8 @@ func New(opts *Options) (res MetadataInterface) {
 		}
 	}
 
+	IP, _ := ip.GetLocalIP()
+
 	mt := &metadata{
 		app:          opts.App,
 		product:      opts.Product,
@@ -86,7 +88,7 @@ func New(opts *Options) (res MetadataInterface) {
 		configMode:   ModeDebug,
 		configType:   ConfigTypeYaml,
 		configPath:   files.Abs(ConfigDirDefault),
-		ip:           ip.GetLocalHost(),
+		ip:           IP,
 	}
 
 	mt.parseConfig(opts.Config)

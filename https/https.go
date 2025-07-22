@@ -196,14 +196,14 @@ func Routes(routes ...internal.Route) Option {
 // 可自定义优先级，默认优先级999(priorities仅取第一个作为中间件优先级)
 func Middleware(handle internal.MiddlewareHandleFunc, priorities ...int) internal.Middleware {
 	return internal.Middleware{
-		Priority: sljces.New(priorities).First(999),
+		Priority: sljces.First(priorities, 999),
 		Handle:   handle,
 	}
 }
 
 func WrapEngineMiddleware(handle gin.HandlerFunc, priorities ...int) internal.Middleware {
 	return internal.Middleware{
-		Priority: sljces.New(priorities).First(999),
+		Priority: sljces.First(priorities, 999),
 		Handle: func(e *gin.Engine) gin.HandlerFunc {
 			return handle
 		},

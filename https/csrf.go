@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mel0dys0ng/song/erlogs"
@@ -310,7 +311,7 @@ func verifyCSRFToken(ctx *gin.Context, config *CSRFConfig) (res *cljent.DTV, err
 		ClientType:    cast.ToUint8(ctx.GetHeader(config.HeaderCTKey)),
 		ClientVersion: ctx.GetHeader(config.HeaderCVKey),
 		Did:           ctx.GetHeader(config.HeaderDidKey),
-		Salt:          crypto.Md5("csrf-token-dtv", true, true),
+		Salt:          crypto.MD5([]any{"csrf-token-dtv", lo.RandomString(32, lo.AllCharset), time.Now().UnixNano()}),
 	}
 
 	if !cljent.IsValidClientType(dtv.ClientType) ||

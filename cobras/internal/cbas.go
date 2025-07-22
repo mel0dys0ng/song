@@ -51,7 +51,7 @@ func (c *Cbas) RegisterRoot(newRootCommandFunc func(name string) CommandInterfac
 
 // RegisterCommand 为root命令添加子命令。若cmds为空，则添加Empty Command；否则添加第一个 Command。
 func (c *Cbas) RegisterCommand(name string, cmds ...CommandInterface) CbaInterface {
-	cmd := sljces.New(cmds).IndexOf(0, NewEmptyCommand(name))
+	cmd := sljces.Index(cmds, 0, NewEmptyCommand(name))
 	command := NewCommand(name, c.root, c.commands, cmd)
 	c.commands[command.Index] = command
 	return NewCba(c, command)

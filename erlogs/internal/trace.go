@@ -8,6 +8,7 @@ import (
 	"github.com/mel0dys0ng/song/utils/aob"
 	"github.com/mel0dys0ng/song/utils/caller"
 	"github.com/mel0dys0ng/song/utils/crypto"
+	"github.com/mel0dys0ng/song/utils/strjngs"
 	"go.uber.org/zap"
 )
 
@@ -124,5 +125,5 @@ func TraceSpanFromContext(ctx context.Context) *TraceSpan {
 }
 
 func genTraceNameID(name string) string {
-	return crypto.Md5(name, true, true)
+	return crypto.MD5([]any{name, strjngs.GenerateStableUniqueStr(), time.Now().UnixNano()})
 }

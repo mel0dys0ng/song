@@ -22,7 +22,7 @@ func (c *Client) CreateSign(data map[string]string) (sign string) {
 	}
 
 	// 签名
-	sign = crypto.Md5(strings.Join(ps, "&"))
+	sign = crypto.MD5(strings.Join(ps, "&"))
 
 	return
 }

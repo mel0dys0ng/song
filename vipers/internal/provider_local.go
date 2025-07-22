@@ -10,6 +10,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/mel0dys0ng/song/erlogs"
+	f "github.com/mel0dys0ng/song/fs"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -95,7 +96,7 @@ func (p *LocalProvider) checkOptions() (err error) {
 
 // 查找配置文件
 func (p *LocalProvider) findConfigFiles() (files []string, err error) {
-	return files.WalkDir(
+	return f.WalkDir(
 		p.Path,
 		func(path string, info fs.FileInfo) bool {
 			return !info.IsDir() && strings.HasSuffix(info.Name(), p.configFileExt)

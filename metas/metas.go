@@ -4,9 +4,9 @@ import (
 	"sync"
 	"time"
 
-	"git.dreamsky.cn/song/metas/internal"
-	"git.dreamsky.cn/song/utils/sljces"
-	"git.dreamsky.cn/song/utils/systems"
+	"github.com/mel0dys0ng/song/metas/internal"
+	"github.com/mel0dys0ng/song/utils/sljces"
+	"github.com/mel0dys0ng/song/utils/systems"
 )
 
 type (
@@ -36,9 +36,8 @@ func Init(opts *Options) {
 // 最后还未初始化，则会Panic。
 func Data(ds ...time.Duration) MetadataInterface {
 	if len(ds) > 0 {
-		sl := sljces.New(ds)
-		sleep := sl.First(10 * time.Millisecond)
-		maxSleep := sl.IndexOf(1, 3*time.Minute)
+		sleep := sljces.First(ds, 10*time.Millisecond)
+		maxSleep := sljces.Last(ds, 3*time.Minute)
 
 		var mu sync.Mutex
 		startTime := time.Now()
