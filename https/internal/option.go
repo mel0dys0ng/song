@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mel0dys0ng/song/erlogs"
-	"github.com/mel0dys0ng/song/utils/systems"
+	"github.com/mel0dys0ng/song/utils/sys"
 	"github.com/mel0dys0ng/song/vipers"
 )
 
@@ -103,7 +103,7 @@ func newOptions(opts []Option) *Options {
 
 	err := vipers.UnmarshalKey(ConfigKey, &options.Config, configDefault)
 	if err != nil {
-		systems.Panicf("failed to load and set the config of http server: %s", err.Error())
+		sys.Panicf("failed to load and set the config of http server: %s", err.Error())
 	}
 
 	for _, v := range opts {

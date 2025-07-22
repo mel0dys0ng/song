@@ -5,7 +5,7 @@ import (
 
 	"github.com/mel0dys0ng/song/utils/result"
 	"github.com/mel0dys0ng/song/utils/retry"
-	"github.com/mel0dys0ng/song/utils/systems"
+	"github.com/mel0dys0ng/song/utils/sys"
 )
 
 const (
@@ -61,7 +61,7 @@ func New[T any](opts ...Option[T]) (c *Cache[T]) {
 	}
 
 	if c.isZero == nil || c.dataId == nil {
-		systems.Panic("isZero or dataId func is nil")
+		sys.Panic("isZero or dataId func is nil")
 	}
 
 	return

@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/mel0dys0ng/song/utils/aob"
-	"github.com/mel0dys0ng/song/utils/files"
+	"github.com/mel0dys0ng/song/utils/fs"
 	"github.com/mel0dys0ng/song/utils/ip"
-	"github.com/mel0dys0ng/song/utils/systems"
+	"github.com/mel0dys0ng/song/utils/sys"
 )
 
 const (
@@ -67,14 +67,14 @@ type (
 // New 创建并返回元数据对象
 func New(opts *Options) (res MetadataInterface) {
 	if opts == nil {
-		systems.Panicf("init metadata opts should not be nil")
+		sys.Panicf("init metadata opts should not be nil")
 		return
 	}
 
 	for k, v := range map[string]string{"app": opts.App, "product": opts.Product} {
 		if len(v) == 0 || !regexp.MustCompile(appOrProductRegexpPattern).MatchString(v) {
 			f := "failed to new metadata: the %s `%s` is invalid. the %s must match the regexp pattern: `%s`"
-			systems.Panicf(f, k, v, k, appOrProductRegexpPattern)
+			sys.Panicf(f, k, v, k, appOrProductRegexpPattern)
 			return
 		}
 	}
@@ -87,32 +87,32 @@ func New(opts *Options) (res MetadataInterface) {
 		envKeyPrefix: fmt.Sprintf("%s_", strings.ToUpper(opts.App)),
 		configMode:   ModeDebug,
 		configType:   ConfigTypeYaml,
-		configPath:   files.Abs(ConfigDirDefault),
+		configPath:   fs.Abs(ConfigDirDefault),
 		ip:           IP,
 	}
 
 	mt.parseConfig(opts.Config)
 	mt.mode = ModeType(mt.Getenv("SONG_MODE", ModeDebug.String()))
 	if !mt.mode.Validate() {
-		systems.Panicf("failed to new metadata: mode invalid. mode = %s", mt.mode.String())
+		sys.Panicf("failed to new metadata: mode invalid. mode = %s", mt.mode.String())
 		return
 	}
 
 	// 校验配置是否可以运行
 	if mt.mode.IsModeTestOrPreOrDebug() && !mt.configMode.IsModeTestOrPreOrDebug() {
-		systems.Panicf("线下环境不能运行线上配置: EnvMode: %s, ConfigMode: %s", mt.mode, mt.configMode)
+		sys.Panicf("线下环境不能运行线上配置: EnvMode: %s, ConfigMode: %s", mt.mode, mt.configMode)
 		return
 	} else if mt.mode.IsModeGray() && !mt.configMode.IsModeGray() {
-		systems.Panicf("灰度环境仅能运行灰度配置: EnvMode: %s, ConfigMode: %s", mt.mode, mt.configMode)
+		sys.Panicf("灰度环境仅能运行灰度配置: EnvMode: %s, ConfigMode: %s", mt.mode, mt.configMode)
 		return
 	} else if mt.mode.IsModeProduction() && !mt.configMode.IsModeProduction() {
-		systems.Panicf("生产环境仅能运行生产配置: EnvMode: %s, ConfigMode: %s", mt.mode, mt.configMode)
+		sys.Panicf("生产环境仅能运行生产配置: EnvMode: %s, ConfigMode: %s", mt.mode, mt.configMode)
 		return
 	}
 
 	logDir, err := filepath.Abs(mt.Getenv("SONG_LOG_DIR", LogDirDefault))
 	if err != nil {
-		systems.Panicf("failed to new metadata: getenv log_dir error(%s)", err.Error())
+		sys.Panicf("failed to new metadata: getenv log_dir error(%s)", err.Error())
 		return
 	}
 
@@ -134,14 +134,14 @@ func (m *metadata) parseConfig(config string) {
 	if len(subs) == 4 {
 		m.configType = subs[1]
 		m.configAddr = subs[2]
-		m.configPath = files.Abs(subs[3])
+		m.configPath = fs.Abs(subs[3])
 	} else {
 		m.configType = ConfigTypeYaml
-		m.configPath = files.Abs(config)
+		m.configPath = fs.Abs(config)
 	}
 
 	if info, err := os.Stat(m.configPath); err != nil || !info.IsDir() {
-		systems.Panicf("failed to new metadata: config path = %s invalid. "+
+		sys.Panicf("failed to new metadata: config path = %s invalid. "+
 			"the config path is not a dir path or not exist",
 			m.configPath,
 		)
@@ -153,7 +153,7 @@ func (m *metadata) parseConfig(config string) {
 	}
 
 	if !m.configMode.Validate() {
-		systems.Panicf("failed to new metadata: config mode = %s invalid. "+
+		sys.Panicf("failed to new metadata: config mode = %s invalid. "+
 			"the value range of the config mode and env mode should be the same. ",
 			m.configMode,
 		)

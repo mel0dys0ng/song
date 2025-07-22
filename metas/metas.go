@@ -6,7 +6,7 @@ import (
 
 	"github.com/mel0dys0ng/song/metas/internal"
 	"github.com/mel0dys0ng/song/utils/sljces"
-	"github.com/mel0dys0ng/song/utils/systems"
+	"github.com/mel0dys0ng/song/utils/sys"
 )
 
 type (
@@ -62,7 +62,7 @@ func Data(ds ...time.Duration) MetadataInterface {
 	}
 
 	if mt == nil {
-		systems.Panic("metadata is not initialized")
+		sys.Panic("metadata is not initialized")
 	}
 
 	return mt

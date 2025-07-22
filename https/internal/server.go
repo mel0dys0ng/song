@@ -16,7 +16,7 @@ import (
 	"github.com/mel0dys0ng/song/erlogs"
 	"github.com/mel0dys0ng/song/metas"
 	"github.com/mel0dys0ng/song/utils/aob"
-	"github.com/mel0dys0ng/song/utils/systems"
+	"github.com/mel0dys0ng/song/utils/sys"
 	"github.com/mel0dys0ng/song/utils/tjme"
 	"go.uber.org/zap"
 )
@@ -108,7 +108,7 @@ func (s *Server) loadInits() {
 		defer func() { s.Inits = nil }()
 		for _, fn := range s.Inits {
 			if err := fn(); err != nil {
-				systems.Panic(err.Error())
+				sys.Panic(err.Error())
 			}
 		}
 	}
