@@ -77,10 +77,6 @@ func (c *Config) LoadOptions(ctx context.Context, key string, elg erlogs.ErLogIn
 		return
 	}
 
-	if values == nil {
-		return
-	}
-
 	if values.Debug != DefaultDebug {
 		opts = append(opts, Debug(values.Debug))
 	}

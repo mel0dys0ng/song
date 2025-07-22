@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/mel0dys0ng/song/erlogs"
@@ -30,6 +29,6 @@ func NewProvider(v *viper.Viper, elg erlogs.ErLogInterface, o *Options) (provide
 		provider = newProvider(v, elg, o)
 		return
 	}
-	err = errors.New(fmt.Sprintf("provider %s is not supported", o.Provider))
+	err = fmt.Errorf("provider %s is not supported", o.Provider)
 	return
 }
