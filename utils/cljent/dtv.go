@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/song/utils/crypto"
+	"github.com/mel0dys0ng/song/utils/crypto"
 )
 
 type DTV struct {

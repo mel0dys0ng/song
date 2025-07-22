@@ -3,7 +3,7 @@ package clients
 import (
 	"time"
 
-	"github.com/song/clients/internal/mysql"
+	"github.com/mel0dys0ng/song/clients/internal/mysql"
 )
 
 func MySQLOptionDebug(b bool) mysql.Option {

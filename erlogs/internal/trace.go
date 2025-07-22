@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/song/utils/aob"
-	"github.com/song/utils/caller"
-	"github.com/song/utils/crypto"
+	"github.com/mel0dys0ng/song/utils/aob"
+	"github.com/mel0dys0ng/song/utils/caller"
+	"github.com/mel0dys0ng/song/utils/crypto"
 	"go.uber.org/zap"
 )
 

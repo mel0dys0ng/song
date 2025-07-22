@@ -3,8 +3,8 @@ package redis
 import (
 	"time"
 
+	"github.com/mel0dys0ng/song/utils/sljces"
 	"github.com/redis/go-redis/v9"
-	"github.com/song/utils/sljces"
 )
 
 const (

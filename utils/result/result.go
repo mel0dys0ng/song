@@ -1,19 +1,17 @@
 package result
 
 type (
-	// Result 是一个泛型结构体，包含 data、ok 和 err 字段
+	// Result 是一个泛型结构体，包含 data、err 字段
 	Result[T any] struct {
 		data T
 		err  error
 	}
 
 	Interface[T any] interface {
-		GetData() T
+		Data() T
 		SetData(value T)
-		GetErr() error
+		Err() error
 		SetErr(err error)
-		// Ok if err == nil return true else return false
-		Ok() bool
 	}
 )
 
@@ -30,8 +28,8 @@ func Error[T any](err error) Interface[T] {
 	return &Result[T]{data: zero, err: err}
 }
 
-// GetData 返回 data 字段的值，如果 receiver 为 nil，则返回零值
-func (r *Result[T]) GetData() T {
+// Data 返回 data 字段的值，如果 receiver 为 nil，则返回零值
+func (r *Result[T]) Data() T {
 	if r == nil {
 		var zero T
 		return zero
@@ -47,8 +45,8 @@ func (r *Result[T]) SetData(value T) {
 	r.data = value
 }
 
-// GetErr 返回 err 字段的值，如果 receiver 为 nil，则返回 nil
-func (r *Result[T]) GetErr() error {
+// Err 返回 err 字段的值，如果 receiver 为 nil，则返回 nil
+func (r *Result[T]) Err() error {
 	if r == nil {
 		return nil
 	}
@@ -61,9 +59,4 @@ func (r *Result[T]) SetErr(value error) {
 		return
 	}
 	r.err = value
-}
-
-// Ok if err == nil return true else return false
-func (r *Result[T]) Ok() bool {
-	return r.GetErr() == nil
 }

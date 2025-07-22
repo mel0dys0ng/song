@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/song/erlogs"
-	"github.com/song/metas"
-	"github.com/song/utils/aob"
+	"github.com/mel0dys0ng/song/erlogs"
+	"github.com/mel0dys0ng/song/metas"
+	"github.com/mel0dys0ng/song/utils/aob"
 	"go.uber.org/zap"
 )
 

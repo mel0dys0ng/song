@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	resty2 "github.com/go-resty/resty/v2"
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/erlogs"
 	"go.uber.org/zap"
 )
 

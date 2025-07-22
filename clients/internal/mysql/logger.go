@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/song/erlogs"
-	"github.com/song/utils/filesys"
+	"github.com/mel0dys0ng/song/erlogs"
+	"github.com/mel0dys0ng/song/utils/files"
 	"gorm.io/gorm/logger"
 )
 
@@ -56,7 +56,7 @@ func newLoggerWriter(ctx context.Context, elg erlogs.ErLogInterface, config *Con
 
 	n := time.Now().Local().Format("20060102")
 	p := filepath.Join(dir, strings.Join([]string{n, suffix}, "."))
-	writer, er := filesys.FileWriter(p, true, 0755)
+	writer, er := files.FileWriter(p, true, 0755)
 	if er != nil {
 		err = elg.PanicE(ctx, erlogs.Msgv("new logger writer fail"), erlogs.Content(er.Error()))
 	}

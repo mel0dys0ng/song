@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/song/erlogs"
-	"github.com/song/utils/sljces"
+	"github.com/mel0dys0ng/song/erlogs"
+	"github.com/mel0dys0ng/song/utils/sljces"
 	"go.uber.org/zap"
 )
 

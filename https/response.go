@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/song/erlogs"
-	"github.com/song/https/internal"
+	"github.com/mel0dys0ng/song/erlogs"
+	"github.com/mel0dys0ng/song/https/internal"
 )
 
 type ContextResponse struct {

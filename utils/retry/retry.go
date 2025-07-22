@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/song/utils/result"
+	"github.com/mel0dys0ng/song/utils/result"
 	"golang.org/x/sync/singleflight"
 )
 
 const (
-	NumDefault   = 3
-	DelayDefault = 20 * time.Millisecond
+	NumDefault   = 3                     // 重试次数
+	DelayDefault = 20 * time.Millisecond // 重试间隔时间
 )
 
 var (
@@ -117,7 +117,11 @@ func newRetry(opts []Option) *retry {
 	}
 
 	if rt.num <= 0 {
-		rt.num = 1
+		rt.num = NumDefault
+	}
+
+	if rt.delay <= 0 {
+		rt.delay = DelayDefault
 	}
 
 	return rt
@@ -137,7 +141,7 @@ func do[T any](ctx context.Context, rt *retry, handler HandlerFunc[T]) (res resu
 	}()
 
 	for i := uint32(0); i < rt.num; i++ {
-		if res = handler(ctx); res.Ok() {
+		if res = handler(ctx); res.Err() == nil {
 			break
 		}
 

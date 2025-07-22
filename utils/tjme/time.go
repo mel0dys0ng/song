@@ -3,7 +3,7 @@ package tjme
 import (
 	"time"
 
-	"github.com/song/utils/sljces"
+	"github.com/mel0dys0ng/song/utils/sljces"
 )
 
 // ParseDuration 解析time.Duration字符串（例如：1d2h3m4s5ms）
@@ -11,7 +11,7 @@ import (
 func ParseDuration(durationString string, defaulValues ...time.Duration) time.Duration {
 	result, err := time.ParseDuration(durationString)
 	if err != nil {
-		return sljces.New(defaulValues).First(0)
+		return sljces.First(defaulValues, 0)
 	}
 	return result
 }

@@ -3,7 +3,7 @@ package systems
 import (
 	"fmt"
 
-	"github.com/song/utils/caller"
+	"github.com/mel0dys0ng/song/utils/caller"
 )
 
 func Panic(err string) {

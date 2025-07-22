@@ -3,7 +3,7 @@ package clients
 import (
 	"time"
 
-	"github.com/song/clients/internal/redis"
+	"github.com/mel0dys0ng/song/clients/internal/redis"
 )
 
 func RedisOptionDebug(b bool) redis.Option {

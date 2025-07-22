@@ -9,8 +9,7 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/song/erlogs"
-	"github.com/song/utils/filesys"
+	"github.com/mel0dys0ng/song/erlogs"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
@@ -96,7 +95,7 @@ func (p *LocalProvider) checkOptions() (err error) {
 
 // 查找配置文件
 func (p *LocalProvider) findConfigFiles() (files []string, err error) {
-	return filesys.WalkDir(
+	return files.WalkDir(
 		p.Path,
 		func(path string, info fs.FileInfo) bool {
 			return !info.IsDir() && strings.HasSuffix(info.Name(), p.configFileExt)

@@ -9,9 +9,9 @@ import (
 	"time"
 
 	resty2 "github.com/go-resty/resty/v2"
+	"github.com/mel0dys0ng/song/metas"
+	"github.com/mel0dys0ng/song/utils/caller"
 	"github.com/samber/lo"
-	"github.com/song/metas"
-	"github.com/song/utils/caller"
 	"github.com/spf13/cast"
 )
 

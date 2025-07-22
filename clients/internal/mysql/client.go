@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/erlogs"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"

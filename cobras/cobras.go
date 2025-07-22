@@ -1,7 +1,7 @@
 package cobras
 
 import (
-	"github.com/song/cobras/internal"
+	"github.com/mel0dys0ng/song/cobras/internal"
 )
 
 type (

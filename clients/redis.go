@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/song/clients/internal/redis"
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/clients/internal/redis"
+	"github.com/mel0dys0ng/song/erlogs"
 )
 
 type (

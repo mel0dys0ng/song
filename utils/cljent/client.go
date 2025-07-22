@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
-	"github.com/song/utils/crypto"
+	"github.com/mel0dys0ng/song/utils/crypto"
 	"github.com/ua-parser/uap-go/uaparser"
 )
 

@@ -8,7 +8,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/song/utils/strjngs"
+	"github.com/mel0dys0ng/song/utils/strjngs"
 	"golang.org/x/crypto/pbkdf2"
 )
 

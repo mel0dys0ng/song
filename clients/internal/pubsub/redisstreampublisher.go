@@ -6,8 +6,8 @@ import (
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-redisstream/pkg/redisstream"
 	"github.com/ThreeDotsLabs/watermill/message"
+	"github.com/mel0dys0ng/song/erlogs"
 	"github.com/redis/go-redis/v9"
-	"github.com/song/erlogs"
 	"go.uber.org/zap"
 )
 

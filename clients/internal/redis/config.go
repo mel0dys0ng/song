@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/song/erlogs"
-	"github.com/song/vipers"
+	"github.com/mel0dys0ng/song/erlogs"
+	"github.com/mel0dys0ng/song/vipers"
 )
 
 // Config 数据库配置

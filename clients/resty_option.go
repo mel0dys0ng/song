@@ -3,7 +3,7 @@ package clients
 import (
 	"time"
 
-	"github.com/song/clients/internal/resty"
+	"github.com/mel0dys0ng/song/clients/internal/resty"
 )
 
 func RestyOptionDebug(b bool) resty.Option {

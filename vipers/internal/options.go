@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/erlogs"
 )
 
 type Options struct {

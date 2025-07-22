@@ -8,7 +8,7 @@ import (
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/erlogs"
 	"go.uber.org/zap"
 )
 

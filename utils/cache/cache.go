@@ -3,9 +3,9 @@ package cache
 import (
 	"context"
 
-	"github.com/song/utils/result"
-	"github.com/song/utils/retry"
-	"github.com/song/utils/systems"
+	"github.com/mel0dys0ng/song/utils/result"
+	"github.com/mel0dys0ng/song/utils/retry"
+	"github.com/mel0dys0ng/song/utils/systems"
 )
 
 const (
@@ -16,11 +16,11 @@ const (
 type (
 	Cache[T any] struct {
 		keyPrefix  string
-		redisCache *redisCache[T]
-		lruCache   *lruCache[T]
 		retryConf  retryConf
-		isZeroData func(data T) bool
-		getDataId  func(data T) any
+		lruCache   *lruCache[T]
+		redisCache *redisCache[T]
+		isZero     func(data T) bool
+		dataId     func(data T) any
 	}
 
 	Option[T any] struct {
@@ -35,11 +35,11 @@ type (
 
 	cacheInterface[T any] interface {
 		isSet() bool
-		isRetryEnable() bool
 		getType() string
+		isRetryEnable() bool
 		genKey(prefix string, data ...any) string
-		get(ctx context.Context, key any, prefix string) result.Interface[T]
 		set(ctx context.Context, key, name any, prefix string, id any, value T) result.Interface[T]
+		get(ctx context.Context, key any, prefix string) result.Interface[T]
 		del(ctx context.Context, key any, prefix string) result.Interface[T]
 	}
 
@@ -60,8 +60,8 @@ func New[T any](opts ...Option[T]) (c *Cache[T]) {
 		}
 	}
 
-	if c.isZeroData == nil || c.getDataId == nil {
-		systems.Panic("isZeroData or getDataId func is nil")
+	if c.isZero == nil || c.dataId == nil {
+		systems.Panic("isZero or dataId func is nil")
 	}
 
 	return
@@ -116,7 +116,7 @@ func (c *Cache[T]) GetOrSet(ctx context.Context, name, key any, set SetFunc[T]) 
 		}
 
 		// 成功获取有效数据时的处理
-		if res.Ok() && !c.isZeroData(res.GetData()) {
+		if res.Err() == nil && !c.isZero(res.Data()) {
 			// 当从Redis获取到数据且LRU缓存未命中时，异步更新LRU缓存
 			if c.isRedisCache(cache) && c.lruCache.isSet() && isLRUCacheNotFound {
 				_ = c.set(ctx, []cacheInterface[T]{c.lruCache}, name, key,
@@ -137,7 +137,7 @@ func (c *Cache[T]) GetOrSet(ctx context.Context, name, key any, set SetFunc[T]) 
 	}
 
 	// 多级缓存均未命中时的回源处理
-	if c.isZeroData(res.GetData()) || (isLRUCacheNotFound || isRedisCacheNotFound) {
+	if c.isZero(res.Data()) || (isLRUCacheNotFound || isRedisCacheNotFound) {
 		return c.set(ctx, []cacheInterface[T]{c.lruCache, c.redisCache}, name, key, set)
 	}
 
@@ -170,9 +170,9 @@ func (c *Cache[T]) set(ctx context.Context, list []cacheInterface[T], name, key 
 				// 执行源数据获取函数
 				setRes = set(ctx)
 				// 当数据有效时设置到当前缓存节点
-				if setRes.Ok() && !c.isZeroData(setRes.GetData()) {
-					id := c.getDataId(setRes.GetData())
-					return cache.set(ctx, key, name, c.keyPrefix, id, setRes.GetData())
+				if setRes.Err() == nil && !c.isZero(setRes.Data()) {
+					id := c.dataId(setRes.Data())
+					return cache.set(ctx, key, name, c.keyPrefix, id, setRes.Data())
 				}
 			}
 			return setRes
@@ -193,7 +193,7 @@ func (c *Cache[T]) set(ctx context.Context, list []cacheInterface[T], name, key 
 		}
 
 		// 遇到失败立即终止处理流程
-		if !res.Ok() {
+		if res.Err() != nil {
 			return
 		}
 	}
@@ -240,13 +240,13 @@ func (c *Cache[T]) Del(ctx context.Context, key any) (res result.Interface[T]) {
 			res = handler(ctx)
 		}
 
-		if !res.Ok() {
+		if res.Err() != nil {
 			continue
 		}
 
 		// 保留非空数据（可能来自删除操作的响应）
-		if !c.isZeroData(res.GetData()) {
-			data = res.GetData()
+		if !c.isZero(res.Data()) {
+			data = res.Data()
 		}
 	}
 

@@ -1,4 +1,4 @@
-package filesys
+package files
 
 import (
 	"bufio"

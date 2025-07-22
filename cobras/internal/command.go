@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/erlogs"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )

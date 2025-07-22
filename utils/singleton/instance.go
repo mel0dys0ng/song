@@ -1,32 +1,23 @@
 package singleton
 
-import (
-	"sync"
-)
+import "sync"
 
-var (
-	instances = &sync.Map{}
-	onces     = &sync.Map{}
-)
-
-// loadOrStore 辅助函数，从sync.Map加载值，不存在则创建并store
-func loadOrStore[K comparable, V any](m *sync.Map, key K, fn func() V) (V, bool) {
-	if value, ok := m.Load(key); ok {
-		if v, ok := value.(V); ok {
-			return v, true
-		}
-	}
-	v := fn()
-	m.Store(key, v)
-	return v, false
+// entry 存储单例实例及其初始化控制
+type entry struct {
+	once  sync.Once
+	value any
 }
 
-// GetInstance 返回指定类型的单例实例
-func GetInstance[T any](key string, fn func() T) (res T) {
-	res, _ = loadOrStore(instances, key, func() (res T) {
-		once, _ := loadOrStore(onces, key, func() *sync.Once { return &sync.Once{} })
-		once.Do(func() { res = fn() })
-		return
-	})
-	return
+var (
+	// m 全局存储 key 到 entry 的映射
+	m sync.Map
+)
+
+// GetInstance 返回指定 key 的单例实例
+// 注意：同一 key 必须始终用于相同类型 T，否则会 panic
+func GetInstance[T any](key string, fn func() T) T {
+	actual, _ := m.LoadOrStore(key, &entry{})
+	e := actual.(*entry)
+	e.once.Do(func() { e.value = fn() })
+	return e.value.(T)
 }

@@ -3,7 +3,7 @@ package ip
 import (
 	"net"
 
-	"github.com/song/utils/strjngs"
+	"github.com/mel0dys0ng/song/utils/strjngs"
 )
 
 // GetLocalHost 获取本地对外IP地址

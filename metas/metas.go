@@ -4,9 +4,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/song/metas/internal"
-	"github.com/song/utils/sljces"
-	"github.com/song/utils/systems"
+	"git.dreamsky.cn/song/metas/internal"
+	"git.dreamsky.cn/song/utils/sljces"
+	"git.dreamsky.cn/song/utils/systems"
 )
 
 type (

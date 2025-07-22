@@ -5,8 +5,8 @@ import (
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
+	"github.com/mel0dys0ng/song/clients/internal/pubsub"
 	"github.com/redis/go-redis/v9"
-	"github.com/song/clients/internal/pubsub"
 )
 
 type (

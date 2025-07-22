@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/song/metas"
-	"github.com/song/utils/systems"
+	"github.com/mel0dys0ng/song/metas"
+	"github.com/mel0dys0ng/song/utils/systems"
 )
 
 const (

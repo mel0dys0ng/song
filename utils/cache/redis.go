@@ -8,9 +8,9 @@ import (
 	"slices"
 	"time"
 
+	"github.com/mel0dys0ng/song/utils/crypto"
+	"github.com/mel0dys0ng/song/utils/result"
 	"github.com/redis/go-redis/v9"
-	"github.com/song/utils/crypto"
-	"github.com/song/utils/result"
 )
 
 type (
@@ -41,12 +41,6 @@ func (c *redisCache[T]) getType() string {
 
 // get 获取缓存数据
 func (c *redisCache[T]) get(ctx context.Context, key any, prefix string) (res result.Interface[T]) {
-	defer func() {
-		fmt.Println("---------------------------------------------------------")
-		fmt.Println("GetByRedis:", key, prefix, res)
-		fmt.Println("---------------------------------------------------------")
-	}()
-
 	var data T
 
 	keyKey := c.genKey(prefix, key)
@@ -78,12 +72,6 @@ func (c *redisCache[T]) get(ctx context.Context, key any, prefix string) (res re
 
 // set 设置缓存数据
 func (c *redisCache[T]) set(ctx context.Context, key, name any, prefix string, id any, value T) (res result.Interface[T]) {
-	defer func() {
-		fmt.Println("---------------------------------------------------------")
-		fmt.Println("SetByRedis:", key, prefix, id, value, res)
-		fmt.Println("---------------------------------------------------------")
-	}()
-
 	bytes, err := json.Marshal(value)
 	if err != nil {
 		return result.Error[T](fmt.Errorf("SetByRedis: %w", err))
@@ -172,14 +160,8 @@ func (c *redisCache[T]) set(ctx context.Context, key, name any, prefix string, i
 
 // del 删除缓存数据
 func (c *redisCache[T]) del(ctx context.Context, key any, prefix string) (res result.Interface[T]) {
-	defer func() {
-		fmt.Println("---------------------------------------------------------")
-		fmt.Println("DelByRedis:", key, prefix, res)
-		fmt.Println("---------------------------------------------------------")
-	}()
-
 	getRes := c.get(ctx, key, prefix)
-	if !getRes.Ok() {
+	if getRes.Err() != nil {
 		return getRes
 	}
 
@@ -225,7 +207,7 @@ func (c *redisCache[T]) del(ctx context.Context, key any, prefix string) (res re
 		return result.Error[T](fmt.Errorf("DelByRedis, %w", err))
 	}
 
-	return result.Success(getRes.GetData())
+	return result.Success(getRes.Data())
 }
 
 func (c *redisCache[T]) genKey(prefix string, data ...any) string {

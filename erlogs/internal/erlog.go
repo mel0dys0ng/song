@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/song/metas"
-	"github.com/song/utils/aob"
-	"github.com/song/utils/caller"
+	"github.com/mel0dys0ng/song/metas"
+	"github.com/mel0dys0ng/song/utils/aob"
+	"github.com/mel0dys0ng/song/utils/caller"
 	"go.uber.org/zap"
 )
 

@@ -3,7 +3,7 @@ package clients
 import (
 	"time"
 
-	"github.com/song/clients/internal/pubsub"
+	"github.com/mel0dys0ng/song/clients/internal/pubsub"
 )
 
 func PubSubMessageUUID(s string) PubSubMessageOpption {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/erlogs"
 )
 
 type (

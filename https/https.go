@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
-	"github.com/song/https/internal"
-	"github.com/song/utils/cljent"
-	"github.com/song/utils/sljces"
+	"github.com/mel0dys0ng/song/https/internal"
+	"github.com/mel0dys0ng/song/utils/cljent"
+	"github.com/mel0dys0ng/song/utils/sljces"
 )
 
 type (

@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/song/erlogs/internal"
+	"github.com/mel0dys0ng/song/erlogs/internal"
 	"go.uber.org/zap"
 )
 

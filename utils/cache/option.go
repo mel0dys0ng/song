@@ -3,8 +3,8 @@ package cache
 import (
 	"time"
 
+	"github.com/mel0dys0ng/song/utils/retry"
 	"github.com/redis/go-redis/v9"
-	"github.com/song/utils/retry"
 )
 
 func RedisCache[T any](client redis.UniversalClient, ttl time.Duration) Option[T] {
@@ -35,18 +35,18 @@ func Retry[T any](enable, singleflight bool, opts ...retry.Option) Option[T] {
 	}
 }
 
-func IsZeroData[T any](fn func(data T) bool) Option[T] {
+func IsZero[T any](fn func(data T) bool) Option[T] {
 	return Option[T]{
 		apply: func(c *Cache[T]) {
-			c.isZeroData = fn
+			c.isZero = fn
 		},
 	}
 }
 
-func GetDataId[T any](fn func(data T) any) Option[T] {
+func DataId[T any](fn func(data T) any) Option[T] {
 	return Option[T]{
 		apply: func(c *Cache[T]) {
-			c.getDataId = fn
+			c.dataId = fn
 		},
 	}
 }

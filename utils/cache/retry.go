@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/song/utils/result"
-	"github.com/song/utils/retry"
+	"github.com/mel0dys0ng/song/utils/result"
+	"github.com/mel0dys0ng/song/utils/retry"
 )
 
 type retryDoRequest[K any, V any] struct {

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/hashicorp/golang-lru/v2/expirable"
-	"github.com/song/utils/crypto"
-	"github.com/song/utils/result"
+	"github.com/mel0dys0ng/song/utils/crypto"
+	"github.com/mel0dys0ng/song/utils/result"
 )
 
 type (
@@ -43,12 +43,6 @@ func (c *lruCache[T]) getType() string {
 
 // get 获取缓存数据
 func (c *lruCache[T]) get(ctx context.Context, key any, prefix string) (res result.Interface[T]) {
-	defer func() {
-		fmt.Println("---------------------------------------------------------")
-		fmt.Println("GetByLRU:", key, prefix, res)
-		fmt.Println("---------------------------------------------------------")
-	}()
-
 	var data T
 
 	keyKey := c.genKey(prefix, key)
@@ -62,12 +56,6 @@ func (c *lruCache[T]) get(ctx context.Context, key any, prefix string) (res resu
 
 // get 设置缓存数据
 func (c *lruCache[T]) set(ctx context.Context, key, name any, prefix string, id any, value T) (res result.Interface[T]) {
-	defer func() {
-		fmt.Println("---------------------------------------------------------")
-		fmt.Println("SetByLRU:", key, prefix, id, value, res)
-		fmt.Println("---------------------------------------------------------")
-	}()
-
 	keyKey := c.genKey(prefix, key)
 	idNameKeys, _ := c.keyClient.Get(keyKey)
 	if len(idNameKeys) == 0 {
@@ -96,14 +84,8 @@ func (c *lruCache[T]) set(ctx context.Context, key, name any, prefix string, id 
 
 // del 删除缓存数据
 func (c *lruCache[T]) del(ctx context.Context, key any, prefix string) (res result.Interface[T]) {
-	defer func() {
-		fmt.Println("---------------------------------------------------------")
-		fmt.Println("DelByLRU:", key, prefix, res)
-		fmt.Println("---------------------------------------------------------")
-	}()
-
 	getRes := c.get(ctx, key, prefix)
-	if !getRes.Ok() {
+	if getRes.Err() != nil {
 		return getRes
 	}
 
@@ -126,7 +108,7 @@ func (c *lruCache[T]) del(ctx context.Context, key any, prefix string) (res resu
 		_ = c.keyClient.Remove(v)
 	}
 
-	return result.Success(getRes.GetData())
+	return result.Success(getRes.Data())
 }
 
 func (c *lruCache[T]) genKey(prefix string, data ...any) string {

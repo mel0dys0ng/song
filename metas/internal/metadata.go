@@ -7,10 +7,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/song/utils/aob"
-	"github.com/song/utils/filesys"
-	"github.com/song/utils/ip"
-	"github.com/song/utils/systems"
+	"git.dreamsky.cn/song/utils/aob"
+	"git.dreamsky.cn/song/utils/files"
+	"git.dreamsky.cn/song/utils/ip"
+	"git.dreamsky.cn/song/utils/systems"
 )
 
 const (
@@ -85,7 +85,7 @@ func New(opts *Options) (res MetadataInterface) {
 		envKeyPrefix: fmt.Sprintf("%s_", strings.ToUpper(opts.App)),
 		configMode:   ModeDebug,
 		configType:   ConfigTypeYaml,
-		configPath:   filesys.Abs(ConfigDirDefault),
+		configPath:   files.Abs(ConfigDirDefault),
 		ip:           ip.GetLocalHost(),
 	}
 
@@ -132,10 +132,10 @@ func (m *metadata) parseConfig(config string) {
 	if len(subs) == 4 {
 		m.configType = subs[1]
 		m.configAddr = subs[2]
-		m.configPath = filesys.Abs(subs[3])
+		m.configPath = files.Abs(subs[3])
 	} else {
 		m.configType = ConfigTypeYaml
-		m.configPath = filesys.Abs(config)
+		m.configPath = files.Abs(config)
 	}
 
 	if info, err := os.Stat(m.configPath); err != nil || !info.IsDir() {

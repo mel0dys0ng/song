@@ -3,7 +3,7 @@ package internal
 import (
 	"os"
 
-	"github.com/song/metas"
+	"github.com/mel0dys0ng/song/metas"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"

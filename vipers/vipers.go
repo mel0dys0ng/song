@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/song/erlogs"
-	"github.com/song/metas"
-	"github.com/song/utils/singleton"
-	"github.com/song/vipers/internal"
+	"github.com/mel0dys0ng/song/erlogs"
+	"github.com/mel0dys0ng/song/metas"
+	"github.com/mel0dys0ng/song/utils/singleton"
+	"github.com/mel0dys0ng/song/vipers/internal"
 )
 
 func Config() internal.ConfigInterface {

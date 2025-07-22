@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/song/clients/internal/mysql"
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/clients/internal/mysql"
+	"github.com/mel0dys0ng/song/erlogs"
 )
 
 type (

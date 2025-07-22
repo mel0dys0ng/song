@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/song/erlogs/internal"
+	"github.com/mel0dys0ng/song/erlogs/internal"
 )
 
 type (

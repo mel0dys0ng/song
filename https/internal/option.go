@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/song/erlogs"
-	"github.com/song/utils/systems"
-	"github.com/song/vipers"
+	"github.com/mel0dys0ng/song/erlogs"
+	"github.com/mel0dys0ng/song/utils/systems"
+	"github.com/mel0dys0ng/song/vipers"
 )
 
 const (

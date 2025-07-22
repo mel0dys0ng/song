@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/song/erlogs"
+	"github.com/mel0dys0ng/song/erlogs"
 	"github.com/spf13/viper"
 )
 
