@@ -90,20 +90,22 @@ type (
 )
 
 func newOptions(opts []Option) *Options {
-	options := &Options{}
-	configDefault := Config{
-		Port:           DefaultPort,
-		TLSOpen:        DefaultHttpsOpen,
-		TLSKeyFile:     DefaultHttpsKeyFile,
-		TLSCertFile:    DefaultHttpsKeyCert,
-		KeepAlive:      DefaultKeepAlive,
-		MaxHeaderBytes: DefaultMaxHeaderBytes,
-		TmpDir:         DefaultTmpDir,
+	options := &Options{
+		Config: Config{
+			Port:           DefaultPort,
+			TLSOpen:        DefaultHttpsOpen,
+			TLSKeyFile:     DefaultHttpsKeyFile,
+			TLSCertFile:    DefaultHttpsKeyCert,
+			KeepAlive:      DefaultKeepAlive,
+			MaxHeaderBytes: DefaultMaxHeaderBytes,
+			TmpDir:         DefaultTmpDir,
+		},
 	}
 
-	err := vipers.UnmarshalKey(ConfigKey, &options.Config, configDefault)
+	err := vipers.UnmarshalKey(ConfigKey, &options.Config)
 	if err != nil {
 		sys.Panicf("failed to load and set the config of http server: %s", err.Error())
+		return nil
 	}
 
 	for _, v := range opts {

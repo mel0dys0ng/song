@@ -23,9 +23,14 @@ type Config struct {
 }
 
 func New(elg erlogs.ErLogInterface, opts ...Option) (res ConfigInterface, err error) {
-	c := &Config{Viper: viper.New(), Options: DefaultOptions(elg)}
+	c := &Config{
+		Viper:   viper.New(),
+		Options: DefaultOptions(elg),
+	}
+
 	c.buildOptions(opts)
 	c.provider, err = NewProvider(c.Viper, elg, c.Options)
+
 	return c, err
 }
 
@@ -184,11 +189,10 @@ func (c *Config) GetUint64(key string, defaultValue uint64) uint64 {
 	return defaultValue
 }
 
-func (c *Config) UnmarshalKey(key string, value, defaultValue any) (err error) {
+func (c *Config) UnmarshalKey(key string, value any) (err error) {
 	if c.Viper.IsSet(key) {
 		return c.Viper.UnmarshalKey(key, value)
 	}
-	value = defaultValue
 	return
 }
 

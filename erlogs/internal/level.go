@@ -1,8 +1,9 @@
 package internal
 
 import (
-	"go.uber.org/zap/zapcore"
 	"strings"
+
+	"go.uber.org/zap/zapcore"
 )
 
 const (

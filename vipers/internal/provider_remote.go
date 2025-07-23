@@ -35,7 +35,7 @@ func (p *RemoteProvider) Load() (err error) {
 		err = p.elg.Panic(
 			context.Background(),
 			erlogs.Msgv("check options failed"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 		)
 		return
 	}
@@ -46,7 +46,7 @@ func (p *RemoteProvider) Load() (err error) {
 		err = p.elg.Panic(
 			context.Background(),
 			erlogs.Msgv("add remote provider failed"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 		)
 		return
 	}
@@ -58,7 +58,7 @@ func (p *RemoteProvider) Load() (err error) {
 		err = p.elg.Panic(
 			context.Background(),
 			erlogs.Msgv("read remote config failed"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 		)
 		return
 	}

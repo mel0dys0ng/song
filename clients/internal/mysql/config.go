@@ -68,7 +68,7 @@ func (c *Config) LoadOptions(ctx context.Context, key string, elg erlogs.ErLogIn
 	opts []Option, err erlogs.ErLogInterface) {
 
 	values := &Config{}
-	er := vipers.UnmarshalKey(key, values, nil)
+	er := vipers.UnmarshalKey(key, values)
 	if er != nil {
 		err = elg.PanicE(ctx,
 			erlogs.Msgv("failed to load options: UnmarshalKey error"),

@@ -190,7 +190,7 @@ func (s *Server) listen() {
 		_elgSys.PanicL(
 			context.Background(),
 			erlogs.Msgv("listen server failed"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 			fields,
 		)
 		return
@@ -228,7 +228,7 @@ func (s *Server) serve() {
 		_elgSys.PanicL(
 			context.Background(),
 			erlogs.Msgv("failed to serve server"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 			fields,
 		)
 		return
@@ -245,7 +245,7 @@ func (s *Server) shutdown() {
 		_elgSys.PanicL(
 			context.Background(),
 			erlogs.Msgv("failed to shutdown server"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 			fields,
 		)
 		return

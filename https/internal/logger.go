@@ -63,7 +63,7 @@ func (s *Server) getRequestResponseData(ctx *gin.Context) (res *RequestResponseD
 	rsp := ResponseFromContext(ctx)
 
 	return &RequestResponseData{
-		Metadata:  metas.Data(),
+		Metadata:  metas.Mt(),
 		StartTime: start,
 		EndTime:   end,
 		Cost:      end.Sub(start).Milliseconds(),

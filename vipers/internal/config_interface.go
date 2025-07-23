@@ -56,7 +56,7 @@ type ConfigInterface interface {
 
 	GetUint64(key string, defaultValue uint64) uint64
 
-	UnmarshalKey(key string, value, defaultValue any) (err error)
+	UnmarshalKey(key string, value any) (err error)
 
 	Unmarshal(value any) error
 

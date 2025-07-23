@@ -30,7 +30,7 @@ func Convert(err error) ErLogInterface {
 		return v
 	}
 
-	return Unknown.WithOptions(Content(err.Error()))
+	return Unknown.WithOptions(ContentError(err))
 }
 
 // OK if err == nil || err.Level <= LevelWarn return true, else return false

@@ -42,7 +42,7 @@ func (p *LocalProvider) Load() (err error) {
 		err = p.elg.Panic(
 			context.Background(),
 			erlogs.Msgv("check options failed"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 		)
 		return
 	}
@@ -52,7 +52,7 @@ func (p *LocalProvider) Load() (err error) {
 		err = p.elg.Panic(
 			context.Background(),
 			erlogs.Msgv("find config files failed"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 		)
 		return
 	}
@@ -117,7 +117,7 @@ func (p *LocalProvider) loadConfigFile(index int, file string) (err error) {
 		err = p.elg.Panic(
 			context.Background(),
 			erlogs.Msgv("load config file failed"),
-			erlogs.Content(err.Error()),
+			erlogs.ContentError(err),
 			erlogs.Fields(zap.String("configFile", file)),
 		)
 		return

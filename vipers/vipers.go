@@ -130,8 +130,8 @@ func GetUint64(key string, defaultValue uint64) uint64 {
 	return Config().GetUint64(key, defaultValue)
 }
 
-func UnmarshalKey(key string, value, defaultValue any) error {
-	return Config().UnmarshalKey(key, value, defaultValue)
+func UnmarshalKey(key string, value any) error {
+	return Config().UnmarshalKey(key, value)
 }
 
 func Unmarshal(value any) error {

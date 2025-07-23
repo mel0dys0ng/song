@@ -67,7 +67,6 @@ func New(opts []Option) ErLogInterface {
 	return e
 }
 
-// Level return the level of *ErLog
 func (e *ErLog) Level() string {
 	if e != nil {
 		return e.level.String()
@@ -75,7 +74,6 @@ func (e *ErLog) Level() string {
 	return ""
 }
 
-// Type return the type of *ErLog
 func (e *ErLog) Type() string {
 	if e != nil {
 		return e.typet
@@ -104,7 +102,6 @@ func (e *ErLog) Code() int64 {
 	return 0
 }
 
-// Msg return the msg of *ErLog
 func (e *ErLog) Msg() string {
 	if e != nil {
 		return e.msg
@@ -112,7 +109,6 @@ func (e *ErLog) Msg() string {
 	return ""
 }
 
-// Content return the content of *ErLog
 func (e *ErLog) Content() string {
 	if e != nil {
 		return e.content
@@ -120,7 +116,6 @@ func (e *ErLog) Content() string {
 	return ""
 }
 
-// At return the time of *ErLog callered
 func (e *ErLog) At() int64 {
 	if e != nil {
 		return e.at
@@ -128,7 +123,6 @@ func (e *ErLog) At() int64 {
 	return 0
 }
 
-// Caller return the caller of *ErLog
 func (e *ErLog) Caller() string {
 	if e != nil {
 		return e.caller
@@ -152,7 +146,7 @@ func (e *ErLog) Chain() []*ErLog {
 
 func (e *ErLog) SetLogger(config *Config) {
 	if e != nil && config != nil {
-		mt := metas.Data()
+		mt := metas.Mt()
 		fields := []zap.Field{
 			zap.String("app", mt.App()),
 			zap.String("product", mt.Product()),
@@ -388,9 +382,6 @@ func (e *ErLog) String() string {
 	return string(bytes)
 }
 
-// new return a new object
-// if the current object has been built, a new object is returned.
-// otherwise, the current object is returned.
 func (e *ErLog) new() *ErLog {
 	if e == nil {
 		return e
