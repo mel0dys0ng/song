@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
-	"github.com/mel0dys0ng/song/examples/apiserver/internal/modules/hello/status"
+	"github.com/mel0dys0ng/song/examples/apiserver/internal/status"
 	"github.com/mel0dys0ng/song/pkgs/erlogs"
 )
 
