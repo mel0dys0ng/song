@@ -15,13 +15,13 @@ func (i *Instance) SayHello(ctx *gin.Context) {
 		return
 	}
 
-	data, err := i.service.SayHello(ctx, request)
+	response, err := i.service.SayHello(ctx, request)
 	if err != nil {
 		https.ResponseError(ctx, err)
 		return
 	}
 
-	https.ResponseSuccess(ctx, data)
+	https.ResponseSuccess(ctx, response)
 }
 
 func (i *Instance) SayHi(ctx *gin.Context) {
@@ -31,11 +31,11 @@ func (i *Instance) SayHi(ctx *gin.Context) {
 		return
 	}
 
-	data, err := i.service.SayHi(ctx, request)
+	response, err := i.service.SayHi(ctx, request)
 	if err != nil {
 		https.ResponseError(ctx, err)
 		return
 	}
 
-	https.ResponseSuccess(ctx, data)
+	https.ResponseSuccess(ctx, response)
 }
