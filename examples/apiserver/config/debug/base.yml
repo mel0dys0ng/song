@@ -1,0 +1,74 @@
+# HTTP Server
+https:
+  #http server port
+  port: 8080
+  #是否开启https
+  TLSOpen: false
+  #https key file path
+  TLSKeyFile:
+  #https cert file path
+  TLSCertFile:
+  # keepalive
+  keepAlive: true
+  #读超时时间，配置格式如：1d1h1m1.1s
+  readTimeout: 10s
+  #读请求头超时时间，配置格式如：1d1h1m1.1s
+  readHeaderTimeout: 1s
+  #读超时时间，配置格式如：1d1h1m1.1s
+  writeTimeout: 3s
+  #空闲链接超时时间，配置格式如：1d1h1m1.1s
+  idleTimeout: 10s
+  #延时stop http server的时间，配置格式如：1d1h1m1.1s
+  hammerTime: 10s
+  #最大请求头字节数
+  maxHeaderBytes: 65535
+  #临时目录
+  tmpDir: ./tmp
+  # cors 跨域设置
+  cors:
+    enable: true
+    allowCredentials: true
+    allowWildcard: true
+    allowOrigins:
+      - "http://localhost:5173"
+    allowMethods:
+      - GET
+      - POST
+      - HEAD
+      - OPTIONS
+    allowHeaders:
+      - Content-Type
+      - X-Song-Request-Id
+      - X-Song-Auth-Token
+      - X-Song-Csrf-Token
+      - X-Song-Xsrf-Token
+      - X-Song-Ct
+      - X-Song-Cv
+      - X-Song-Did
+    maxAge: 24h
+  #日志
+  erlog:
+    #日志记录最低级别
+    level: info
+    #每个日志文件保存的最大尺寸 单位：M
+    maxSize: 500
+    #日志文件最多保存多少个备份
+    maxBackups: 7
+    #文件最多保存多少天
+    maxAge: 7
+    #是否压缩
+    compress: true
+
+# ErLog
+erlogs:
+  default:
+    #日志记录最低级别
+    level: info
+    #每个日志文件保存的最大尺寸 单位：M
+    maxSize: 500
+    #日志文件最多保存多少个备份
+    maxBackups: 7
+    #文件最多保存多少天
+    maxAge: 7
+    #是否压缩
+    compress: true
