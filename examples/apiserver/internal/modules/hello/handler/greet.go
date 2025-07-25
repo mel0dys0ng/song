@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mel0dys0ng/song/core/https"
 	"github.com/mel0dys0ng/song/examples/apiserver/internal/modules/hello/service"
-	"github.com/mel0dys0ng/song/pkgs/https"
 )
 
 func (i *Instance) SayHello(ctx *gin.Context) {

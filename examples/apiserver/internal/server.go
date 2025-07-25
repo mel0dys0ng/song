@@ -3,9 +3,9 @@ package internal
 import (
 	"slices"
 
-	"github.com/mel0dys0ng/song/pkgs/cobras"
-	"github.com/mel0dys0ng/song/pkgs/https"
-	"github.com/mel0dys0ng/song/pkgs/metas"
+	"github.com/mel0dys0ng/song/core/cobras"
+	"github.com/mel0dys0ng/song/core/https"
+	"github.com/mel0dys0ng/song/core/metas"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/mel0dys0ng/song/pkgs/cobras"
+import "github.com/mel0dys0ng/song/core/cobras"
 
 const (
 	app = "song"

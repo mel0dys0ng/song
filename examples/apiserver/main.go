@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/mel0dys0ng/song/core/cobras"
 	"github.com/mel0dys0ng/song/examples/apiserver/internal"
-	"github.com/mel0dys0ng/song/pkgs/cobras"
 )
 
 const (

@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mel0dys0ng/song/core/https"
 	"github.com/mel0dys0ng/song/examples/apiserver/internal/modules/hello/handler"
 	"github.com/mel0dys0ng/song/examples/apiserver/internal/modules/hello/router"
-	"github.com/mel0dys0ng/song/pkgs/https"
 )
 
 func SetupRoutes(groupPath string) https.Option {

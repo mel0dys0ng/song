@@ -1,6 +1,6 @@
 package status
 
-import "github.com/mel0dys0ng/song/pkgs/erlogs"
+import "github.com/mel0dys0ng/song/core/erlogs"
 
 var (
 	ServerErrorMsg          = "系统网络异常,请稍后重试"

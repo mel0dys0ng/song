@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mel0dys0ng/song/pkgs/https"
+	"github.com/mel0dys0ng/song/core/https"
 )
 
 // SetupStartHook http server启动时执行的函数
