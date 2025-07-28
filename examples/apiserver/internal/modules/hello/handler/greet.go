@@ -1,17 +1,18 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/mel0dys0ng/song/core/erlogs"
 	"github.com/mel0dys0ng/song/core/https"
 	"github.com/mel0dys0ng/song/examples/apiserver/internal/modules/hello/service"
+	"github.com/mel0dys0ng/song/examples/apiserver/internal/status"
 )
 
 func (i *Instance) SayHello(ctx *gin.Context) {
 	request := &service.SayHelloRequest{}
 	if err := ctx.ShouldBind(request); err != nil {
-		ctx.JSON(http.StatusBadRequest, err.Error())
+		err = status.InvalidArguments.Info(ctx, erlogs.ContentError(err))
+		https.ResponseError(ctx, err)
 		return
 	}
 
@@ -27,7 +28,8 @@ func (i *Instance) SayHello(ctx *gin.Context) {
 func (i *Instance) SayHi(ctx *gin.Context) {
 	request := &service.SayHiRequest{}
 	if err := ctx.ShouldBind(request); err != nil {
-		ctx.JSON(http.StatusBadRequest, err.Error())
+		err = status.InvalidArguments.Info(ctx, erlogs.ContentError(err))
+		https.ResponseError(ctx, err)
 		return
 	}
 
