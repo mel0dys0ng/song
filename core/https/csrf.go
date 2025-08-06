@@ -146,7 +146,7 @@ func CSRFOptionMaxAge(i int) CSRFOption {
 	}
 }
 
-func CSRFOptionMethods(ss []string) CSRFOption {
+func CSRFOptionMethods(ss ...string) CSRFOption {
 	return CSRFOption{
 		Apply: func(c *CSRFConfig) {
 			c.Methods = ss
@@ -154,7 +154,7 @@ func CSRFOptionMethods(ss []string) CSRFOption {
 	}
 }
 
-func CSRFOptionOrigins(ss []string) CSRFOption {
+func CSRFOptionOrigins(ss ...string) CSRFOption {
 	return CSRFOption{
 		Apply: func(c *CSRFConfig) {
 			c.Origins = ss
@@ -162,7 +162,7 @@ func CSRFOptionOrigins(ss []string) CSRFOption {
 	}
 }
 
-func CSRFOptionRefererPrefixs(ss []string) CSRFOption {
+func CSRFOptionRefererPrefixs(ss ...string) CSRFOption {
 	return CSRFOption{
 		Apply: func(c *CSRFConfig) {
 			c.RefererPrefixs = ss

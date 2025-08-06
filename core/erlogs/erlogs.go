@@ -45,7 +45,7 @@ func OK(err error) bool {
 //
 //	func Test(ctx context.Context) (err error) {
 //			ctx = erlogs.StartTrace(ctx, "name")
-//			defer erlogs.EndTrace(ctx, err)
+//			defer func () { erlogs.EndTrace(ctx, err) }
 //			// some codes...
 //			return
 //	}
@@ -60,7 +60,7 @@ func StartTrace(ctx context.Context, name string) context.Context {
 //
 //	func Test(ctx context.Context) (err error) {
 //			ctx = erlogs.StartTrace(ctx, "name")
-//			defer erlogs.EndTrace(ctx, err)
+//			defer func () { erlogs.EndTrace(ctx, err) }
 //			// some codes...
 //			return
 //	}

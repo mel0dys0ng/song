@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	name = "apiserver-example"
+	// 应用名称
+	name = "song-apiserver-example"
 )
 
 func main() {
