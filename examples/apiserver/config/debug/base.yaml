@@ -1,7 +1,7 @@
 # HTTP Server
 https:
   #http server port
-  port: 8080
+  port: 10022
   #是否开启https
   TLSOpen: false
   #https key file path
@@ -72,3 +72,7 @@ erlogs:
     maxAge: 7
     #是否压缩
     compress: true
+
+crypto:
+  aesKey: aB3$fG7@kLa9!pQ2#rS5&vW18^yZ1*xC4%hJ6(nsM0)mDq+eTl-uXsi=oVb_PcA|RdK\SfL:QsgH;IjO{YpsN}UzsE<tsF>wG
+  aesSalt: W9^qQ1*zC4%h86(iM2)0mDq+e3Tl
