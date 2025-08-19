@@ -135,8 +135,8 @@ func Msgv(values ...any) internal.Option {
 	}
 }
 
-// ValidatorError 根据validator的error设置Msg和Content
-func ValidatorError(data any, err error) internal.Option {
+// ValidateError 根据validator的error设置Msg和Content
+func ValidateError(data any, err error) internal.Option {
 	return internal.Option{
 		Apply: func(e *internal.ErLog) {
 			if err == nil {

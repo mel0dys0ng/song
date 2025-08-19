@@ -20,7 +20,7 @@ type (
 func (i *Instance) SayHello(ctx *gin.Context, request *SayHelloRequest) (response *SayHelloResponse, err error) {
 	reqCtx := ctx.Request.Context()
 	if err = validator.New().Struct(request); err != nil {
-		err = status.InvalidArguments.Info(reqCtx, erlogs.ValidatorError(request, err))
+		err = status.InvalidArguments.Info(reqCtx, erlogs.ValidateError(request, err))
 		return
 	}
 
@@ -42,7 +42,7 @@ type (
 func (i *Instance) SayHi(ctx *gin.Context, request *SayHiRequest) (response *SayHiResponse, err error) {
 	reqCtx := ctx.Request.Context()
 	if err = validator.New().Struct(request); err != nil {
-		err = status.InvalidArguments.Info(reqCtx, erlogs.ValidatorError(request, err))
+		err = status.InvalidArguments.Info(reqCtx, erlogs.ValidateError(request, err))
 		return
 	}
 
