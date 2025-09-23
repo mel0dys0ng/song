@@ -1,6 +1,6 @@
 module github.com/mel0dys0ng/song
 
-go 1.24.5
+go 1.25.0
 
 require (
 	github.com/ThreeDotsLabs/watermill v1.4.7
