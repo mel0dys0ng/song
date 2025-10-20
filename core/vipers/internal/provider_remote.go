@@ -18,21 +18,21 @@ import (
 type RemoteProvider struct {
 	*Options
 	*viper.Viper
-	elg erlogs.ErLogInterface
+	el erlogs.ErLogInterface
 }
 
-func NewRemoteProvider(v *viper.Viper, elg erlogs.ErLogInterface, o *Options) ProviderInterface {
+func NewRemoteProvider(v *viper.Viper, el erlogs.ErLogInterface, o *Options) ProviderInterface {
 	return &RemoteProvider{
 		Viper:   v,
 		Options: o,
-		elg:     elg,
+		el:      el,
 	}
 }
 
 func (p *RemoteProvider) Load() (err error) {
 	err = p.checkOptions()
 	if err != nil {
-		err = p.elg.Panic(
+		err = p.el.Panic(
 			context.Background(),
 			erlogs.Msgv("check options failed"),
 			erlogs.ContentError(err),
@@ -43,7 +43,7 @@ func (p *RemoteProvider) Load() (err error) {
 	// setting
 	err = p.Viper.AddRemoteProvider(p.Provider, p.Endpoint, p.Path)
 	if err != nil {
-		err = p.elg.Panic(
+		err = p.el.Panic(
 			context.Background(),
 			erlogs.Msgv("add remote provider failed"),
 			erlogs.ContentError(err),
@@ -55,7 +55,7 @@ func (p *RemoteProvider) Load() (err error) {
 	p.Viper.SetConfigType(p.Type)
 	err = p.Viper.ReadRemoteConfig()
 	if err != nil {
-		err = p.elg.Panic(
+		err = p.el.Panic(
 			context.Background(),
 			erlogs.Msgv("read remote config failed"),
 			erlogs.ContentError(err),

@@ -22,14 +22,14 @@ type Config struct {
 	provider ProviderInterface
 }
 
-func New(elg erlogs.ErLogInterface, opts ...Option) (res ConfigInterface, err error) {
+func New(el erlogs.ErLogInterface, opts ...Option) (res ConfigInterface, err error) {
 	c := &Config{
 		Viper:   viper.New(),
-		Options: DefaultOptions(elg),
+		Options: DefaultOptions(el),
 	}
 
 	c.buildOptions(opts)
-	c.provider, err = NewProvider(c.Viper, elg, c.Options)
+	c.provider, err = NewProvider(c.Viper, el, c.Options)
 
 	return c, err
 }

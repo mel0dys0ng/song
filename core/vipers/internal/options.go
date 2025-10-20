@@ -59,12 +59,12 @@ func OnChangeConfig(f func(fsnotify.Event, *Options)) Option {
 	}
 }
 
-func DefaultOptions(elg erlogs.ErLogInterface) *Options {
+func DefaultOptions(el erlogs.ErLogInterface) *Options {
 	return &Options{
 		Provider: ConfigProviderYaml,
 		Type:     ConfigProviderYaml,
 		OnChangeConfig: func(event fsnotify.Event, options *Options) {
-			elg.InfoL(
+			el.InfoL(
 				context.Background(),
 				erlogs.Msgv("config has changed"),
 				erlogs.Content(event.String()),

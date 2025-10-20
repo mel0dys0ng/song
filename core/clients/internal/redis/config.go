@@ -152,7 +152,7 @@ type Config struct {
 	RouteRandomly bool `mapstructure:"routeRandomly" json:"routeRandomly"`
 }
 
-func NewConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts []Option) (
+func NewConfig(ctx context.Context, key string, el erlogs.ErLogInterface, opts []Option) (
 	config *Config, err erlogs.ErLogInterface) {
 
 	config = &Config{
@@ -184,7 +184,7 @@ func NewConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts 
 		RouteByLatency:        DefaultRouteByLatency,
 	}
 
-	options, err := config.LoadOptions(ctx, key, elg)
+	options, err := config.LoadOptions(ctx, key, el)
 	if err != nil {
 		return
 	}
@@ -194,19 +194,19 @@ func NewConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts 
 		v.Func(config)
 	}
 
-	err = config.check(ctx, elg)
+	err = config.check(ctx, el)
 
 	return
 }
 
 // LoadOptions 加载配置并返回Options
-func (c *Config) LoadOptions(ctx context.Context, key string, elg erlogs.ErLogInterface) (
+func (c *Config) LoadOptions(ctx context.Context, key string, el erlogs.ErLogInterface) (
 	opts []Option, err erlogs.ErLogInterface) {
 
 	values := &Config{}
 	er := vipers.UnmarshalKey(key, values)
 	if er != nil {
-		err = elg.PanicE(ctx,
+		err = el.PanicE(ctx,
 			erlogs.Msgv("failed to load options: UnmarshalKey error"),
 			erlogs.Content(er.Error()),
 		)
@@ -312,9 +312,9 @@ func (c *Config) LoadOptions(ctx context.Context, key string, elg erlogs.ErLogIn
 	return
 }
 
-func (c *Config) check(ctx context.Context, elg erlogs.ErLogInterface) (err erlogs.ErLogInterface) {
+func (c *Config) check(ctx context.Context, el erlogs.ErLogInterface) (err erlogs.ErLogInterface) {
 	if len(c.Addrs) == 0 {
-		err = elg.PanicE(ctx, erlogs.Msgv("config addrs empty"))
+		err = el.PanicE(ctx, erlogs.Msgv("config addrs empty"))
 		return
 	}
 

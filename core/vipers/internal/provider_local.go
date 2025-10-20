@@ -25,21 +25,21 @@ type LocalProvider struct {
 	*Options
 	*viper.Viper
 	configFileExt string // 配置文件后缀
-	elg           erlogs.ErLogInterface
+	el            erlogs.ErLogInterface
 }
 
-func NewLocalProvider(v *viper.Viper, elg erlogs.ErLogInterface, o *Options) ProviderInterface {
+func NewLocalProvider(v *viper.Viper, el erlogs.ErLogInterface, o *Options) ProviderInterface {
 	return &LocalProvider{
 		Viper:   v,
 		Options: o,
-		elg:     elg,
+		el:      el,
 	}
 }
 
 func (p *LocalProvider) Load() (err error) {
 	err = p.checkOptions()
 	if err != nil {
-		err = p.elg.Panic(
+		err = p.el.Panic(
 			context.Background(),
 			erlogs.Msgv("check options failed"),
 			erlogs.ContentError(err),
@@ -49,7 +49,7 @@ func (p *LocalProvider) Load() (err error) {
 
 	files, err := p.findConfigFiles()
 	if err != nil {
-		err = p.elg.Panic(
+		err = p.el.Panic(
 			context.Background(),
 			erlogs.Msgv("find config files failed"),
 			erlogs.ContentError(err),
@@ -114,7 +114,7 @@ func (p *LocalProvider) loadConfigFile(index int, file string) (err error) {
 	}
 
 	if err != nil {
-		err = p.elg.Panic(
+		err = p.el.Panic(
 			context.Background(),
 			erlogs.Msgv("load config file failed"),
 			erlogs.ContentError(err),
@@ -123,7 +123,7 @@ func (p *LocalProvider) loadConfigFile(index int, file string) (err error) {
 		return
 	}
 
-	p.elg.InfoL(
+	p.el.InfoL(
 		context.Background(),
 		erlogs.Msgv("load config file success"),
 		erlogs.Fields(zap.String("configFile", file)),

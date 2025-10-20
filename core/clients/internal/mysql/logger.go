@@ -14,10 +14,10 @@ import (
 )
 
 // newLogger return new gorm logger interface object
-func newLogger(ctx context.Context, elg erlogs.ErLogInterface, config *Config) (
+func newLogger(ctx context.Context, el erlogs.ErLogInterface, config *Config) (
 	lgr logger.Interface, err erlogs.ErLogInterface) {
 
-	loggerWriter, err := newLoggerWriter(ctx, elg, config)
+	loggerWriter, err := newLoggerWriter(ctx, el, config)
 	if err != nil {
 		return
 	}
@@ -36,7 +36,7 @@ func newLogger(ctx context.Context, elg erlogs.ErLogInterface, config *Config) (
 }
 
 // newLoggerWriter return new logger writer
-func newLoggerWriter(ctx context.Context, elg erlogs.ErLogInterface, config *Config) (
+func newLoggerWriter(ctx context.Context, el erlogs.ErLogInterface, config *Config) (
 	writer *os.File, err erlogs.ErLogInterface) {
 
 	writer = os.Stdout
@@ -58,7 +58,7 @@ func newLoggerWriter(ctx context.Context, elg erlogs.ErLogInterface, config *Con
 	p := filepath.Join(dir, strings.Join([]string{n, suffix}, "."))
 	writer, er := fs.FileWriter(p, true, 0755)
 	if er != nil {
-		err = elg.PanicE(ctx, erlogs.Msgv("new logger writer fail"), erlogs.Content(er.Error()))
+		err = el.PanicE(ctx, erlogs.Msgv("new logger writer fail"), erlogs.Content(er.Error()))
 	}
 
 	return

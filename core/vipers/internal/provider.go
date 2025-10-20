@@ -24,9 +24,9 @@ var (
 )
 
 // NewProvider 返回配置类型对应的配置加载器
-func NewProvider(v *viper.Viper, elg erlogs.ErLogInterface, o *Options) (provider ProviderInterface, err error) {
+func NewProvider(v *viper.Viper, el erlogs.ErLogInterface, o *Options) (provider ProviderInterface, err error) {
 	if newProvider, ok := newProviderFuncs[o.Provider]; ok {
-		provider = newProvider(v, elg, o)
+		provider = newProvider(v, el, o)
 		return
 	}
 	err = fmt.Errorf("provider %s is not supported", o.Provider)

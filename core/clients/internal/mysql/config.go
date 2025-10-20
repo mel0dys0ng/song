@@ -27,7 +27,7 @@ type Config struct {
 	LogColorful             bool          `mapstructure:"logColorful" json:"logColorful"`                         // 日志颜色
 }
 
-func newConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts []Option) (
+func newConfig(ctx context.Context, key string, el erlogs.ErLogInterface, opts []Option) (
 	config *Config, err erlogs.ErLogInterface) {
 
 	config = &Config{
@@ -48,7 +48,7 @@ func newConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts 
 		LogColorful:             DefaultLogColorful,
 	}
 
-	options, err := config.LoadOptions(ctx, key, elg)
+	options, err := config.LoadOptions(ctx, key, el)
 	if err != nil {
 		return
 	}
@@ -58,19 +58,19 @@ func newConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts 
 		v.Func(config)
 	}
 
-	err = config.check(ctx, elg)
+	err = config.check(ctx, el)
 
 	return
 }
 
 // LoadOptions 加载配置并返回Options
-func (c *Config) LoadOptions(ctx context.Context, key string, elg erlogs.ErLogInterface) (
+func (c *Config) LoadOptions(ctx context.Context, key string, el erlogs.ErLogInterface) (
 	opts []Option, err erlogs.ErLogInterface) {
 
 	values := &Config{}
 	er := vipers.UnmarshalKey(key, values)
 	if er != nil {
-		err = elg.PanicE(ctx,
+		err = el.PanicE(ctx,
 			erlogs.Msgv("failed to load options: UnmarshalKey error"),
 			erlogs.Content(er.Error()),
 		)
@@ -141,9 +141,9 @@ func (c *Config) LoadOptions(ctx context.Context, key string, elg erlogs.ErLogIn
 }
 
 // 校验配置
-func (c *Config) check(ctx context.Context, elg erlogs.ErLogInterface) (err erlogs.ErLogInterface) {
+func (c *Config) check(ctx context.Context, el erlogs.ErLogInterface) (err erlogs.ErLogInterface) {
 	if len(c.Master) == 0 {
-		err = elg.ErorrE(ctx,
+		err = el.ErorrE(ctx,
 			erlogs.Msgv("mysql config invalid"),
 			erlogs.Content("config master empty"),
 		)
@@ -151,7 +151,7 @@ func (c *Config) check(ctx context.Context, elg erlogs.ErLogInterface) (err erlo
 	}
 
 	if len(c.Slaves) == 0 {
-		err = elg.ErorrE(ctx,
+		err = el.ErorrE(ctx,
 			erlogs.Msgv("mysql config invalid"),
 			erlogs.Content("config slaves empty"),
 		)
@@ -159,7 +159,7 @@ func (c *Config) check(ctx context.Context, elg erlogs.ErLogInterface) (err erlo
 	}
 
 	if c.MaxIdle <= 0 {
-		err = elg.ErorrE(ctx,
+		err = el.ErorrE(ctx,
 			erlogs.Msgv("mysql config invalid"),
 			erlogs.Content("config maxIdle invalid"),
 		)
@@ -167,7 +167,7 @@ func (c *Config) check(ctx context.Context, elg erlogs.ErLogInterface) (err erlo
 	}
 
 	if c.MaxActive <= c.MaxIdle {
-		err = elg.ErorrE(ctx,
+		err = el.ErorrE(ctx,
 			erlogs.Msgv("mysql config invalid"),
 			erlogs.Content("config maxActive must > maxIdle"),
 		)
@@ -175,7 +175,7 @@ func (c *Config) check(ctx context.Context, elg erlogs.ErLogInterface) (err erlo
 	}
 
 	if c.MaxConnLifeTime <= 0 {
-		err = elg.ErorrE(ctx,
+		err = el.ErorrE(ctx,
 			erlogs.Msgv("mysql config invalid"),
 			erlogs.Content("config maxConnLifeTime invalid"),
 		)
@@ -183,7 +183,7 @@ func (c *Config) check(ctx context.Context, elg erlogs.ErLogInterface) (err erlo
 	}
 
 	if c.IdleTimeout <= 0 {
-		err = elg.ErorrE(ctx,
+		err = el.ErorrE(ctx,
 			erlogs.Msgv("mysql config invalid"),
 			erlogs.Content("config idleTimeout invalid"),
 		)

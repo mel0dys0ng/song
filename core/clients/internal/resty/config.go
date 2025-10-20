@@ -43,7 +43,7 @@ type Config struct {
 	SignTTL time.Duration `json:"signTTL" mapstructure:"signTTL"`
 }
 
-func newConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts []Option) (
+func newConfig(ctx context.Context, key string, el erlogs.ErLogInterface, opts []Option) (
 	config *Config, err erlogs.ErLogInterface) {
 
 	config = &Config{
@@ -59,7 +59,7 @@ func newConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts 
 		SignTTL:          DefaultSignTTL,
 	}
 
-	options, err := config.LoadOptions(ctx, key, elg)
+	options, err := config.LoadOptions(ctx, key, el)
 	if err != nil {
 		return
 	}
@@ -69,19 +69,19 @@ func newConfig(ctx context.Context, key string, elg erlogs.ErLogInterface, opts 
 		v.Apply(config)
 	}
 
-	err = config.check(ctx, elg)
+	err = config.check(ctx, el)
 
 	return
 }
 
 // LoadOptions 加载配置并返回Options
-func (c *Config) LoadOptions(ctx context.Context, key string, elg erlogs.ErLogInterface) (
+func (c *Config) LoadOptions(ctx context.Context, key string, el erlogs.ErLogInterface) (
 	opts []Option, err erlogs.ErLogInterface) {
 
 	values := &Config{}
 	er := vipers.UnmarshalKey(key, values)
 	if er != nil {
-		err = elg.PanicE(ctx,
+		err = el.PanicE(ctx,
 			erlogs.Msgv("failed to load options: UnmarshalKey error"),
 			erlogs.Content(er.Error()),
 		)
@@ -131,9 +131,9 @@ func (c *Config) LoadOptions(ctx context.Context, key string, elg erlogs.ErLogIn
 	return
 }
 
-func (c *Config) check(ctx context.Context, elg erlogs.ErLogInterface) (err erlogs.ErLogInterface) {
+func (c *Config) check(ctx context.Context, el erlogs.ErLogInterface) (err erlogs.ErLogInterface) {
 	if len(c.BaseURL) == 0 {
-		err = elg.PanicE(ctx,
+		err = el.PanicE(ctx,
 			erlogs.Msgv("baseURL should not be empty"),
 		)
 		return
