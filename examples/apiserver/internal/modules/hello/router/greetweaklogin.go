@@ -7,7 +7,7 @@ import (
 )
 
 func SetupGreetWeakLoginRoutes(eng *gin.Engine, groupPath string, h *handler.Instance) {
-	g := eng.Group(groupPath, middlewares.WeaAuth())
+	g := eng.Group(groupPath, middlewares.WeakAuth())
 	{
 		g.POST("/greet/sayHi", h.SayHi)
 	}

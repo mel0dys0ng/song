@@ -7,7 +7,7 @@ import (
 )
 
 func SetupGreetMustLoginRoutes(eng *gin.Engine, groupPath string, h *handler.Instance) {
-	g := eng.Group(groupPath, middlewares.MustAuth())
+	g := eng.Group(groupPath, middlewares.Auth())
 	{
 		g.POST("/greet/sayHello", h.SayHello)
 	}
