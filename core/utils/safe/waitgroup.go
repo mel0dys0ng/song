@@ -37,16 +37,11 @@ func (i *WaitGroup) Go(ctx context.Context, f func(ctx context.Context) error) {
 		var err error
 		defer i.wg.Done()
 
-		// 双defer执行顺序：
-		// 1. 当前defer处理错误收集
-		// 2. 外层defer执行Done操作
 		defer func() {
-			// panic恢复处理：将panic转换为带有堆栈跟踪的错误对象
 			if r := recover(); r != nil {
 				err = &PanicError{Stack: string(debug.Stack()), Value: r}
 			}
 
-			// 并发安全地追加错误到共享切片
 			if err != nil {
 				i.mu.Lock()
 				i.errs = append(i.errs, err)
@@ -54,7 +49,6 @@ func (i *WaitGroup) Go(ctx context.Context, f func(ctx context.Context) error) {
 			}
 		}()
 
-		// 执行用户定义的任务函数并捕获常规错误
 		err = f(ctx)
 	}()
 }

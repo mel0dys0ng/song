@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/mel0dys0ng/song/core/metas"
@@ -382,25 +383,53 @@ func (e *ErLog) String() string {
 	return string(bytes)
 }
 
+func (e *ErLog) clone() *ErLog {
+	if e == nil {
+		return e
+	}
+
+	c := &ErLog{
+		logger:  e.logger,
+		caller:  e.caller,
+		level:   e.level,
+		typet:   e.typet,
+		bizId:   e.bizId,
+		bizName: e.bizName,
+		code:    e.code,
+		msg:     e.msg,
+		content: e.content,
+		at:      e.at,
+		format:  e.format,
+		skip:    e.skip,
+		log:     e.log,
+		built:   e.built,
+	}
+
+	if e.fields != nil {
+		c.fields = make([]zap.Field, len(e.fields))
+		copy(c.fields, e.fields)
+	}
+
+	if e.chain != nil {
+		c.chain = make([]*ErLog, len(e.chain))
+		copy(c.chain, e.chain)
+	}
+
+	return c
+}
+
 func (e *ErLog) new() *ErLog {
 	if e == nil {
 		return e
 	}
 
-	// 调用链
-	c := *e
-	chain := e.chain
-	e.chain = nil
-	c.chain = nil
-	c.chain = append(c.chain, e)
-	if len(chain) > 0 {
-		c.chain = append(c.chain, chain...)
-	}
-
-	// 设置未未被build过，重新来过
+	c := e.clone()
+	d := e.clone()
+	d.chain = nil
+	c.chain = slices.Insert(c.chain, 0, d)
 	c.built = false
 
-	return &c
+	return c
 }
 
 func (e *ErLog) build(ctx context.Context, level Level, opts []Option) *ErLog {

@@ -154,12 +154,12 @@ func ValidateError(data any, err error) internal.Option {
 
 			errors := err.(validator.ValidationErrors)
 			if len(errors) > 0 {
-				typ := reflect.TypeOf(data)
-				if typ.Kind() == reflect.Ptr {
-					typ = typ.Elem()
+				tp := reflect.TypeOf(data)
+				if tp.Kind() == reflect.Pointer {
+					tp = tp.Elem()
 				}
 
-				field, _ := typ.FieldByName(errors[0].StructField())
+				field, _ := tp.FieldByName(errors[0].StructField())
 				if msg := field.Tag.Get("msg"); len(msg) > 0 {
 					e.SetMsg(msg)
 				}

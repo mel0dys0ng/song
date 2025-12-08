@@ -12,33 +12,35 @@ import (
 )
 
 func Config() internal.ConfigInterface {
-	return singleton.GetInstance("__song__.vipers", func() (res internal.ConfigInterface) {
-		var err error
+	return singleton.GetInstance("__song__.vipers", initConfig)
+}
 
-		ctx := erlogs.StartTrace(context.Background(), "initVipers")
-		defer func() { erlogs.EndTrace(ctx, err) }()
+func initConfig() (res internal.ConfigInterface) {
+	var err error
 
-		opts := []internal.Option{
-			internal.Provider(metas.ConfigType()),
-			internal.Type(metas.ConfigType()),
-			internal.Endpoint(metas.ConfigAddr()),
-			internal.Path(metas.ConfigPath()),
-		}
+	ctx := erlogs.StartTrace(context.Background(), "initVipers")
+	defer func() { erlogs.EndTrace(ctx, err) }()
 
-		elgSys := erlogs.New(erlogs.TypeSystem(), erlogs.Log(true), erlogs.Msgf("[vipers] %s"))
-		config, err := internal.New(elgSys, opts...)
-		if err != nil {
-			elgSys.PanicL(ctx, erlogs.Msgv("new config failed"), erlogs.ContentError(err))
-			return
-		}
+	opts := []internal.Option{
+		internal.Provider(metas.ConfigType()),
+		internal.Type(metas.ConfigType()),
+		internal.Endpoint(metas.ConfigAddr()),
+		internal.Path(metas.ConfigPath()),
+	}
 
-		if err := config.Provider().Load(); err != nil {
-			elgSys.PanicL(ctx, erlogs.Msgv("load config failed"), erlogs.ContentError(err))
-			return
-		}
+	el := erlogs.New(erlogs.TypeSystem(), erlogs.Log(true), erlogs.Msgf("[vipers] %s"))
+	config, err := internal.New(el, opts...)
+	if err != nil {
+		el.PanicL(ctx, erlogs.Msgv("new config failed"), erlogs.ContentError(err))
+		return
+	}
 
-		return config
-	})
+	if err := config.Provider().Load(); err != nil {
+		el.PanicL(ctx, erlogs.Msgv("load config failed"), erlogs.ContentError(err))
+		return
+	}
+
+	return config
 }
 
 // Key return the key of config with config key sub names
