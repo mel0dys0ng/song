@@ -1,243 +1,114 @@
-# Song 框架 HTTPS 模块
+# HTTPS Server
 
-Song 框架的 HTTPS 模块是基于 Gin 框架构建的 HTTP 服务组件，提供了完整的 Web 服务功能，包括安全特性、日志记录、客户端信息识别等功能。
+A comprehensive HTTP/HTTPS server built on top of the Gin framework, providing robust web service capabilities with built-in security features, client information detection, structured logging, and distributed tracing support.
 
-## 主要特性
+## Table of Contents
 
-- **基于 Gin 框架**：充分利用 Gin 框架的高性能和灵活性
-- **安全中间件**：支持 CORS、CSRF 和请求签名验证
-- **客户端信息识别**：自动解析用户代理、操作系统、浏览器和设备信息
-- **结构化日志**：集成 erlogs 实现结构化日志记录
-- **分布式追踪**：内置追踪 ID 支持分布式系统监控
-- **优雅关闭**：支持服务优雅启动和关闭
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Architecture Overview](#architecture-overview)
+- [Usage Guide](#usage-guide)
+  - [Creating a Server](#creating-a-server)
+  - [Server Configuration](#server-configuration)
+  - [Middleware Support](#middleware-support)
+  - [Route Registration](#route-registration)
+  - [Client Information](#client-information)
+- [Security Features](#security-features)
+  - [CORS](#cors)
+  - [CSRF Protection](#csrf-protection)
+  - [Request Signing](#request-signing)
+- [Lifecycle Hooks](#lifecycle-hooks)
+- [Configuration Options](#configuration-options)
+- [Examples](#examples)
+- [Best Practices](#best-practices)
 
-## 核心功能
+## Features
 
-### 1. 服务器配置
+- **Gin Framework**: Built on the high-performance Gin web framework
+- **Security Middleware**: CORS, CSRF, and request signature verification
+- **Client Detection**: Automatic parsing of user agent, OS, browser, and device information
+- **Structured Logging**: Integration with erlogs for comprehensive logging
+- **Distributed Tracing**: Built-in trace ID support for distributed system monitoring
+- **Graceful Shutdown**: Support for graceful server startup and shutdown
+- **TLS/HTTPS Support**: Full support for HTTPS with TLS configuration
+- **Timeout Management**: Configurable read, write, and idle timeouts
+- **Recovery Middleware**: Automatic panic recovery with stack traces
+- **Custom Middleware**: Easy integration of custom middleware
 
-HTTPS 模块支持多种服务器配置选项，包括：
+## Installation
 
-- **基本配置**：端口、TLS 设置、超时配置等
-- **连接管理**：Keep-Alive、最大请求头大小等
-- **日志配置**：日志级别、存储位置、轮转策略等
+Ensure you have the required dependencies:
 
-#### 配置模板
-
-```yaml
-https:
-  port: 8080 # 服务器监听端口
-  TLSOpen: false # 是否开启TLS
-  TLSKeyFile: "" # TLS私钥文件路径
-  TLSCertFile: "" # TLS证书文件路径
-  keepAlive: true # 是否启用Keep-Alive
-  readTimeout: "30s" # 读取超时时间
-  readHeaderTimeout: "30s" # 读取头部超时时间
-  writeTimeout: "60s" # 写入超时时间
-  idleTimeout: "60s" # 空闲超时时间
-  hammerTime: "30s" # 优雅关闭等待时间
-  maxHeaderBytes: 1048576 # 最大请求头大小(字节)
-  tmpDir: "./tmp" # 临时目录
-  loggerHeaderKeys: # 需要在日志中记录的请求头键
-    - "User-Agent"
-    - "Accept-Encoding"
-
-  # 日志配置
-  erlog:
-    dir: "logs" # 日志存储目录
-    fileName: "https.log" # 日志文件名
-    level: "info" # 日志级别(debug/info/warn/error/panic/fatal)
-    maxSize: 100 # 单个日志文件最大大小(MB)
-    maxBackups: 10 # 日志备份文件数量
-    maxAge: 30 # 日志保留天数
-    compress: false # 是否压缩日志
-
-  # CORS配置
-  cors:
-    enable: false # 是否启用CORS
-    allowOrigins: # 允许的来源域名
-      - "http://localhost:3000"
-      - "https://yourdomain.com"
-    allowHeaders: # 允许的请求头
-      - "Origin"
-      - "Content-Length"
-      - "Content-Type"
-      - "Authorization"
-    allowMethods: # 允许的HTTP方法
-      - "GET"
-      - "POST"
-      - "PUT"
-      - "DELETE"
-      - "OPTIONS"
-    exposeHeaders: # 允许客户端访问的响应头
-      - "Content-Length"
-      - "Access-Control-Allow-Origin"
-    allowCredentials: true # 是否允许携带凭据(cookie等)
-    allowWildcard: false # 是否允许通配符匹配
-    maxAge: "12h" # 预检请求缓存时间
-
-  # CSRF配置
-  csrf:
-    enable: false # 是否启用CSRF保护
-    lookupType: "header" # 查找类型(header/form/query)
-    lookupName: "X-Song-Csrf-Token" # 查找名称
-    cookieName: "X-Song-Csrf-Token" # CSRF Cookie名称
-    cookieDomain: "" # CSRF Cookie域名
-    cookiePath: "/" # CSRF Cookie路径
-    cookieMaxAge: 3600 # CSRF Cookie最大存活时间(秒)
-    cookieSecure: false # CSRF Cookie是否只在HTTPS下传输
-    cookieHttpOnly: true # CSRF Cookie是否禁用JS访问
-
-  # 签名验证配置
-  sign:
-    enable: false # 是否启用签名验证
-    secret: "default_sign_secret" # 签名密钥
-    ttl: 300 # 签名有效期(秒)
-    query: true # 是否验证查询参数
-    formData: true # 是否验证表单数据
-    header: true # 是否验证请求头
+```bash
+go get github.com/gin-gonic/gin
 ```
 
-### 2. 安全中间件
+## Quick Start
 
-#### CORS 中间件
-
-- 控制跨域资源共享策略
-- 支持自定义允许的来源、请求头、方法等
-- 可配置凭证传递和通配符匹配
-
-#### CSRF 中间件
-
-- 防止跨站请求伪造攻击
-- 支持从请求头、表单或查询参数中验证令牌
-- 为安全方法（GET、HEAD、OPTIONS、TRACE）自动生成令牌
-
-#### 签名验证中间件
-
-- 验证请求的数字签名
-- 支持查询参数、表单数据和请求头的签名验证
-- 包含时间戳验证，防止重放攻击
-
-### 3. 客户端信息识别
-
-客户端信息中间件能够自动识别并记录以下信息：
-
-- **IP 地址**：通过 X-Forwarded-For、X-Real-Ip 或直接连接获取客户端 IP
-- **设备 ID**：支持多种设备 ID 来源（请求头、查询参数、表单字段）
-- **用户代理**：解析操作系统、浏览器类型和版本
-- **客户端类型**：区分 Web 应用、移动应用和桌面应用
-- **版本信息**：支持解析客户端版本号和构建号
-
-#### 操作系统检测
-
-- Windows
-- macOS
-- iOS
-- Android
-- Linux
-- Unix
-
-#### 浏览器检测
-
-- Chrome / Chrome Mobile
-- Safari / Safari Mobile
-- Firefox
-- Edge
-- Internet Explorer
-- Opera
-- UC Browser
-- Samsung Browser
-
-#### ClientInfo 结构体方法
-
-ClientInfo 结构体提供了全面的方法来访问客户端信息，包括安全的 getter 方法，确保在 ClientInfo 为 nil 时返回零值：
-
-- **IP 相关**：
-  - `GetIP()` - 获取客户端 IP 地址
-  - `GetDeviceID()` - 获取设备 ID
-  - `GetUserAgent()` - 获取用户代理字符串
-- **请求信息**：
-  - `GetMethod()` - 获取请求方法
-  - `GetPath()` - 获取请求路径
-- **操作系统信息**：
-  - `GetOS()` - 获取操作系统名称
-  - `GetOSVersion()` - 获取操作系统版本
-- **浏览器信息**：
-  - `GetBrowser()` - 获取浏览器名称
-  - `GetBrowserVersion()` - 获取浏览器版本
-- **客户端类型和版本**：
-  - `GetClientType()` - 获取客户端类型 (Web, Mobile App, Desktop App)
-  - `GetClientVersion()` - 获取客户端版本号
-  - `GetAppBuild()` - 获取应用构建号
-- **类型判断方法**：
-  - `IsWindows()` / `IsMacOS()` / `IsAndroid()` / `IsIOS()` - 操作系统类型判断
-  - `IsChrome()` / `IsSafari()` / `IsFirefox()` / `IsEdge()` - 浏览器类型判断
-  - `IsMobileOS()` / `IsDesktopOS()` - 操作系统分类判断
-  - `IsWebClient()` / `IsMobileApp()` / `IsDesktopApp()` - 客户端类型判断
-- **版本比较方法**：
-  - `CompareVersion(target string)` - 比较客户端版本
-  - `IsVersionEqual(target string)` - 检查版本是否相等
-  - `IsVersionGreater(target string)` - 检查版本是否大于指定版本
-  - `IsVersionGreaterOrEqual(target string)` - 检查版本是否大于或等于指定版本
-  - `IsVersionLess(target string)` - 检查版本是否小于指定版本
-  - `IsVersionLessOrEqual(target string)` - 检查版本是否小于或等于指定版本
-
-### 4. 响应处理
-
-模块提供了标准化的响应处理机制：
-
-- **成功响应**：使用 `ResponseSuccess` 函数返回成功结果
-- **错误响应**：使用 `ResponseError` 函数返回错误信息
-- **自定义响应**：通过 `ResponseWithStatus` 实现自定义响应
-- **多种格式**：支持 JSON、JSONP、HTML、流式等多种响应格式
-
-### 5. 日志记录
-
-- **结构化日志**：记录请求的详细信息，包括时间、IP、状态码、路径等
-- **性能监控**：记录请求耗时，帮助性能分析
-- **错误追踪**：集成追踪 ID，便于错误定位
-- **自定义字段**：支持记录特定请求头信息
-
-### 6. 分布式追踪
-
-- **请求追踪**：为每个请求分配唯一的追踪 ID
-- **链路追踪**：支持分布式系统的请求链路追踪
-
-## 使用方法
-
-### 基本服务器启动
+Here's a minimal example to get you started:
 
 ```go
 package main
 
 import (
+    "github.com/gin-gonic/gin"
     "github.com/mel0dys0ng/song/internal/core/https"
 )
 
 func main() {
-    server := https.New([]https.Option{})
-    server.Serve()
-}
-```
-
-### 自定义配置启动
-
-```go
-package main
-
-import (
-    "github.com/mel0dys0ng/song/internal/core/https"
-)
-
-func main() {
+    // Create server with options
     server := https.New([]https.Option{
-        https.Port(9090),
-        https.TLS(false),
+        https.Port(8080),
+        https.Route(func(eng *gin.Engine) {
+            eng.GET("/health", func(c *gin.Context) {
+                c.JSON(200, gin.H{
+                    "status": "ok",
+                })
+            })
+        }),
     })
+    
+    // Start server
     server.Serve()
 }
 ```
 
-### 添加路由和中间件
+Run the server:
+```bash
+curl http://localhost:8080/health
+# Output: {"status":"ok"}
+```
+
+## Architecture Overview
+
+The HTTPS server provides a layered architecture:
+
+```
+┌─────────────────┐
+│  HTTP Server    │ - Net/http server wrapper
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    │ Gin Engine│ - Request routing
+    └────┬────┘
+         │
+    ┌────┴────────────┐
+    │  Middlewares    │ - Security, logging, recovery
+    └─────────────────┘
+```
+
+**Key Components:**
+- **Server**: Main server structure with configuration
+- **Options**: Server configuration options
+- **Middleware**: Security and logging middleware
+- **Client**: Client information detection
+
+## Usage Guide
+
+### Creating a Server
+
+Create an HTTP server instance:
 
 ```go
 import (
@@ -246,89 +117,651 @@ import (
 )
 
 func main() {
+    // Basic server creation
     server := https.New([]https.Option{
+        https.Port(8080),
+    })
+    
+    // Server with routes
+    server := https.New([]https.Option{
+        https.Port(8080),
         https.Route(func(eng *gin.Engine) {
-            eng.GET("/api/hello", func(ctx *gin.Context) {
-                https.ResponseSuccess(ctx, "Hello, World!")
-            })
-        }),
-        https.Middleware(https.Middleware{
-            Priority: 1,
-            Handle: func(eng *gin.Engine) gin.HandlerFunc {
-                return func(ctx *gin.Context) {
-                    // 自定义中间件逻辑
-                    ctx.Next()
-                }
-            },
+            eng.GET("/api/users", getUsersHandler)
+            eng.POST("/api/users", createUserHandler)
         }),
     })
-
+    
+    // Start the server
     server.Serve()
 }
 ```
 
-### 获取客户端信息
+### Server Configuration
+
+Configure the server with various options:
 
 ```go
-func handler(ctx *gin.Context) {
-    clientInfo := https.GetClientInfo(ctx)
+server := https.New([]https.Option{
+    // Basic configuration
+    https.Port(8080),
+    https.Host("0.0.0.0"),
+    
+    // TLS configuration
+    https.TLSOpen(true),
+    https.TLSKeyFile("/path/to/key.pem"),
+    https.TLSCertFile("/path/to/cert.pem"),
+    
+    // Timeout configuration
+    https.ReadTimeout(30 * time.Second),
+    https.ReadHeaderTimeout(30 * time.Second),
+    https.WriteTimeout(60 * time.Second),
+    https.IdleTimeout(60 * time.Second),
+    
+    // Connection configuration
+    https.KeepAlive(true),
+    https.MaxHeaderBytes(1 << 20), // 1MB
+    
+    // Lifecycle hooks
+    https.OnStart(func() {
+        fmt.Println("Server started")
+    }),
+    https.OnShutdown(func() {
+        fmt.Println("Server shutting down")
+    }),
+    
+    // Routes
+    https.Route(func(eng *gin.Engine) {
+        eng.GET("/health", healthHandler)
+    }),
+})
+```
 
-    // 使用客户端信息
-    fmt.Println("IP:", clientInfo.GetIP())
-    fmt.Println("OS:", clientInfo.GetOS())
-    fmt.Println("Browser:", clientInfo.GetBrowser())
-    fmt.Println("Device ID:", clientInfo.GetDeviceID())
+### Middleware Support
 
-    // 版本比较
-    if clientInfo.IsVersionGreaterOrEqual("1.2.0") {
-      // 特定版本逻辑
+Add custom middleware to the server:
+
+```go
+// Custom logging middleware
+func CustomLogger() https.MiddlewareHandleFunc {
+    return func(eng *gin.Engine) gin.HandlerFunc {
+        return func(c *gin.Context) {
+            start := time.Now()
+            c.Next()
+            duration := time.Since(start)
+            fmt.Printf("Request: %s %s - %d - %v\n", 
+                c.Request.Method, c.Request.URL.Path, 
+                c.Writer.Status(), duration)
+        }
     }
+}
 
-    https.ResponseSuccess(ctx, "OK")
+// Add middleware with priority
+server := https.New([]https.Option{
+    https.Middleware(https.Middleware{
+        Priority: 1,
+        Handle: CustomLogger(),
+    }),
+    https.Middleware(https.Middleware{
+        Priority: 2,
+        Handle: AuthenticationMiddleware(),
+    }),
+})
+```
+
+### Route Registration
+
+Register routes using the Route option:
+
+```go
+server := https.New([]https.Option{
+    https.Route(func(eng *gin.Engine) {
+        // Health check
+        eng.GET("/health", healthHandler)
+        
+        // API routes
+        api := eng.Group("/api")
+        {
+            api.GET("/users", getUsersHandler)
+            api.POST("/users", createUserHandler)
+            api.GET("/users/:id", getUserHandler)
+            api.PUT("/users/:id", updateUserHandler)
+            api.DELETE("/users/:id", deleteUserHandler)
+        }
+        
+        // Static files
+        eng.Static("/static", "./static")
+        
+        // 404 handler
+        eng.NoRoute(notFoundHandler)
+    }),
+})
+```
+
+### Client Information
+
+Access client information in handlers:
+
+```go
+func handler(c *gin.Context) {
+    // Get client info from context
+    clientInfo, exists := c.Get(https.ClientInfoContextKey)
+    if exists {
+        info := clientInfo.(*https.ClientInfo)
+        
+        fmt.Printf("IP: %s\n", info.IP)
+        fmt.Printf("Device ID: %s\n", info.DeviceID)
+        fmt.Printf("OS: %s\n", info.OS)
+        fmt.Printf("Browser: %s\n", info.Browser)
+        fmt.Printf("Client Type: %d\n", info.ClientType)
+        fmt.Printf("User Agent: %s\n", info.UserAgent)
+    }
+    
+    c.JSON(200, gin.H{"status": "ok"})
 }
 ```
 
-## API 文档
+## Security Features
 
-### 服务器配置选项
+### CORS
 
-- `Port(int)` - 设置服务器端口
-- `Host(string)` - 设置服务器主机
-- `TLS(bool)` - 启用/禁用 TLS
-- `TLSKeyFile(string)` - 设置 TLS 私钥文件
-- `TLSCertFile(string)` - 设置 TLS 证书文件
-- `CORS(*Cors)` - 配置 CORS
-- `CSRF(*CSRF)` - 配置 CSRF
-- `Sign(*Sign)` - 配置签名验证
-- `Route(Route)` - 添加路由
-- `Middleware(Middleware)` - 添加中间件
+Configure Cross-Origin Resource Sharing:
 
-### 响应函数
+```go
+server := https.New([]https.Option{
+    https.CORS(&https.Cors{
+        Enable:       true,
+        AllowOrigins: []string{
+            "http://localhost:3000",
+            "https://yourdomain.com",
+        },
+        AllowHeaders: []string{
+            "Origin",
+            "Content-Type",
+            "Authorization",
+        },
+        AllowMethods: []string{
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "OPTIONS",
+        },
+        ExposeHeaders: []string{
+            "Content-Length",
+            "Access-Control-Allow-Origin",
+        },
+        AllowCredentials: true,
+        MaxAge:           12 * time.Hour,
+    }),
+})
+```
 
-- `Response(ctx, data, err, opts...)` - 通用响应函数
-- `ResponseSuccess(ctx, data, opts...)` - 成功响应
-- `ResponseError(ctx, err, opts...)` - 错误响应
-- `ResponseWithStatus(ctx, status, opts...)` - 自定义状态响应
+### CSRF Protection
 
-### 客户端信息方法
+Enable CSRF protection:
 
-- `GetClientInfo(ctx)` - 获取客户端信息
-- `IsWindows()` / `IsMacOS()` / `IsAndroid()` / `IsIOS()` - 操作系统检测
-- `IsChrome()` / `IsSafari()` / `IsFirefox()` / `IsEdge()` - 浏览器检测
-- `IsWebClient()` / `IsMobileApp()` / `IsDesktopApp()` - 客户端类型检测
-- `CompareVersion(targetVersion)` - 版本比较
-- `IsVersionGreater(targetVersion)` / `IsVersionLess(targetVersion)` - 版本比较便捷方法
+```go
+server := https.New([]https.Option{
+    https.CSRF(&https.CSRF{
+        Enable:         true,
+        LookupType:     "header",
+        LookupName:     "X-CSRF-Token",
+        CookieName:     "X-CSRF-Token",
+        CookieDomain:   "yourdomain.com",
+        CookiePath:     "/",
+        CookieMaxAge:   3600,
+        CookieSecure:   true,
+        CookieHttpOnly: true,
+    }),
+})
+```
 
-## 性能特点
+### Request Signing
 
-- **中间件排序**：支持中间件优先级排序
-- **并发优化**：使用读写锁优化高并发场景
-- **资源管理**：支持优雅关闭，确保资源正确释放
-- **内存优化**：使用对象池减少 GC 压力
+Enable request signature verification:
 
-## 安全特性
+```go
+server := https.New([]https.Option{
+    https.Sign(&https.Sign{
+        Enable:   true,
+        Secret:   "your-secret-key",
+        TTL:      300, // 5 minutes
+        Query:    true,
+        FormData: true,
+        Header:   true,
+    }),
+})
+```
 
-- **CSRF 保护**：防止跨站请求伪造
-- **签名验证**：确保请求完整性
-- **CORS 控制**：限制跨域访问
-- **输入验证**：对用户输入进行验证
+## Lifecycle Hooks
+
+The server supports various lifecycle hooks:
+
+```go
+server := https.New([]https.Option{
+    // Called when server starts
+    https.OnStart(func() {
+        fmt.Println("Server started successfully")
+        // Initialize resources, connections, etc.
+    }),
+    
+    // Called when server start fails
+    https.OnStartFail(func(err error) {
+        fmt.Printf("Server start failed: %v\n", err)
+    }),
+    
+    // Called when server is shutting down
+    https.OnShutdown(func() {
+        fmt.Println("Server shutting down")
+        // Cleanup resources, close connections, etc.
+    }),
+    
+    // Called when process exits
+    https.OnExit(func() {
+        fmt.Println("Process exiting")
+    }),
+    
+    // Called after each request is responded
+    https.OnResponded(func(ctx context.Context, data *https.RequestResponseData) {
+        fmt.Printf("Request completed: %s %s - %d\n", 
+            data.Method, data.Path, data.Status)
+    }),
+    
+    // Called when panic is recovered
+    https.OnRecovered(func(ctx context.Context, data *https.RecoveredData) {
+        fmt.Printf("Panic recovered: %v\n", data.Error)
+    }),
+})
+```
+
+## Configuration Options
+
+### Server Options
+
+| Option | Parameters | Description |
+|--------|------------|-------------|
+| `Port` | `int` | Server port number |
+| `Host` | `string` | Server host address |
+| `TLSOpen` | `bool` | Enable TLS/HTTPS |
+| `TLSKeyFile` | `string` | TLS private key file path |
+| `TLSCertFile` | `string` | TLS certificate file path |
+| `KeepAlive` | `bool` | Enable Keep-Alive |
+| `ReadTimeout` | `time.Duration` | Read timeout |
+| `ReadHeaderTimeout` | `time.Duration` | Read header timeout |
+| `WriteTimeout` | `time.Duration` | Write timeout |
+| `IdleTimeout` | `time.Duration` | Idle timeout |
+| `MaxHeaderBytes` | `int` | Maximum header size |
+| `TmpDir` | `string` | Temporary directory |
+
+### Middleware Options
+
+| Option | Parameters | Description |
+|--------|------------|-------------|
+| `CORS` | `*Cors` | CORS configuration |
+| `CSRF` | `*CSRF` | CSRF protection configuration |
+| `Sign` | `*Sign` | Request signing configuration |
+| `Middleware` | `Middleware` | Custom middleware |
+
+### Lifecycle Options
+
+| Option | Parameters | Description |
+|--------|------------|-------------|
+| `OnStart` | `func()` | Called on server start |
+| `OnStartFail` | `func(error)` | Called on start failure |
+| `OnShutdown` | `func()` | Called on shutdown |
+| `OnExit` | `func()` | Called on exit |
+| `OnResponded` | `func(context.Context, *RequestResponseData)` | Called after response |
+| `OnRecovered` | `func(context.Context, *RecoveredData)` | Called on panic recovery |
+
+### Route Options
+
+| Option | Parameters | Description |
+|--------|------------|-------------|
+| `Route` | `func(*gin.Engine)` | Route registration function |
+| `Init` | `func() error` | Initialization function |
+| `Defer` | `func()` | Deferred function |
+
+## Examples
+
+### Complete Example: REST API Server
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "net/http"
+    "time"
+    
+    "github.com/gin-gonic/gin"
+    "github.com/mel0dys0ng/song/internal/core/https"
+    "github.com/mel0dys0ng/song/internal/core/erlogs"
+    "go.uber.org/zap"
+)
+
+type User struct {
+    ID    int    `json:"id"`
+    Name  string `json:"name"`
+    Email string `json:"email"`
+}
+
+var users = []User{
+    {ID: 1, Name: "Alice", Email: "alice@example.com"},
+    {ID: 2, Name: "Bob", Email: "bob@example.com"},
+}
+
+func main() {
+    // Create server
+    server := https.New([]https.Option{
+        // Basic configuration
+        https.Port(8080),
+        https.ReadTimeout(30 * time.Second),
+        https.WriteTimeout(60 * time.Second),
+        
+        // CORS configuration
+        https.CORS(&https.Cors{
+            Enable:           true,
+            AllowOrigins:     []string{"http://localhost:3000"},
+            AllowCredentials: true,
+        }),
+        
+        // Lifecycle hooks
+        https.OnStart(func() {
+            fmt.Println("API server started on :8080")
+        }),
+        https.OnShutdown(func() {
+            fmt.Println("API server shutting down")
+        }),
+        
+        // Routes
+        https.Route(func(eng *gin.Engine) {
+            // Health check
+            eng.GET("/health", func(c *gin.Context) {
+                c.JSON(200, gin.H{"status": "ok"})
+            })
+            
+            // API routes
+            api := eng.Group("/api")
+            {
+                // Get all users
+                api.GET("/users", getUsersHandler)
+                
+                // Get single user
+                api.GET("/users/:id", getUserHandler)
+                
+                // Create user
+                api.POST("/users", createUserHandler)
+                
+                // Update user
+                api.PUT("/users/:id", updateUserHandler)
+                
+                // Delete user
+                api.DELETE("/users/:id", deleteUserHandler)
+            }
+        }),
+    })
+    
+    // Start server
+    server.Serve()
+}
+
+func getUsersHandler(c *gin.Context) {
+    ctx := c.Request.Context()
+    
+    // Log request
+    erlogs.New("Get users list").
+        Options(BaseELOptions()).
+        InfoLog(ctx)
+    
+    c.JSON(http.StatusOK, gin.H{
+        "data": users,
+    })
+}
+
+func getUserHandler(c *gin.Context) {
+    ctx := c.Request.Context()
+    id := c.Param("id")
+    
+    // Log request
+    erlogs.New("Get user").
+        Options(BaseELOptions()).
+        InfoLog(ctx,
+            erlogs.OptionFields(zap.String("user_id", id)),
+        )
+    
+    // Find user
+    for _, user := range users {
+        if fmt.Sprintf("%d", user.ID) == id {
+            c.JSON(http.StatusOK, gin.H{
+                "data": user,
+            })
+            return
+        }
+    }
+    
+    c.JSON(http.StatusNotFound, gin.H{
+        "error": "User not found",
+    })
+}
+
+func createUserHandler(c *gin.Context) {
+    ctx := c.Request.Context()
+    
+    var user User
+    if err := c.ShouldBindJSON(&user); err != nil {
+        erlogs.Convert(err).
+            Wrap("Invalid request body").
+            Options(BaseELOptions()).
+            ErrorLog(ctx)
+        
+        c.JSON(http.StatusBadRequest, gin.H{
+            "error": "Invalid request body",
+        })
+        return
+    }
+    
+    // Generate ID
+    user.ID = len(users) + 1
+    
+    // Add to list
+    users = append(users, user)
+    
+    // Log creation
+    erlogs.New("User created").
+        Options(BaseELOptions()).
+        InfoLog(ctx,
+            erlogs.OptionFields(
+                zap.Int("user_id", user.ID),
+                zap.String("name", user.Name),
+            ),
+        )
+    
+    c.JSON(http.StatusCreated, gin.H{
+        "data": user,
+    })
+}
+
+func updateUserHandler(c *gin.Context) {
+    id := c.Param("id")
+    
+    var user User
+    if err := c.ShouldBindJSON(&user); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{
+            "error": "Invalid request body",
+        })
+        return
+    }
+    
+    // Find and update user
+    for i, u := range users {
+        if fmt.Sprintf("%d", u.ID) == id {
+            users[i].Name = user.Name
+            users[i].Email = user.Email
+            
+            c.JSON(http.StatusOK, gin.H{
+                "data": users[i],
+            })
+            return
+        }
+    }
+    
+    c.JSON(http.StatusNotFound, gin.H{
+        "error": "User not found",
+    })
+}
+
+func deleteUserHandler(c *gin.Context) {
+    id := c.Param("id")
+    
+    // Find and delete user
+    for i, u := range users {
+        if fmt.Sprintf("%d", u.ID) == id {
+            users = append(users[:i], users[i+1:]...)
+            
+            c.JSON(http.StatusOK, gin.H{
+                "message": "User deleted",
+            })
+            return
+        }
+    }
+    
+    c.JSON(http.StatusNotFound, gin.H{
+        "error": "User not found",
+    })
+}
+
+func BaseELOptions() []erlogs.Option {
+    return []erlogs.Option{
+        erlogs.OptionKind(erlogs.KindBiz),
+        erlogs.OptionCallerSkip(3),
+    }
+}
+```
+
+### Example: Middleware Chain
+
+```go
+// Authentication middleware
+func AuthenticationMiddleware() https.MiddlewareHandleFunc {
+    return func(eng *gin.Engine) gin.HandlerFunc {
+        return func(c *gin.Context) {
+            token := c.GetHeader("Authorization")
+            
+            if token == "" {
+                c.JSON(http.StatusUnauthorized, gin.H{
+                    "error": "Missing authorization token",
+                })
+                c.Abort()
+                return
+            }
+            
+            // Validate token
+            if !validateToken(token) {
+                c.JSON(http.StatusUnauthorized, gin.H{
+                    "error": "Invalid token",
+                })
+                c.Abort()
+                return
+            }
+            
+            c.Next()
+        }
+    }
+}
+
+// Rate limiting middleware
+func RateLimitMiddleware() https.MiddlewareHandleFunc {
+    return func(eng *gin.Engine) gin.HandlerFunc {
+        return func(c *gin.Context) {
+            // Implement rate limiting logic
+            c.Next()
+        }
+    }
+}
+
+// Usage
+server := https.New([]https.Option{
+    https.Middleware(https.Middleware{
+        Priority: 1,
+        Handle:   AuthenticationMiddleware(),
+    }),
+    https.Middleware(https.Middleware{
+        Priority: 2,
+        Handle:   RateLimitMiddleware(),
+    }),
+})
+```
+
+### Example: Graceful Shutdown
+
+```go
+func main() {
+    var server *https.Server
+    
+    server = https.New([]https.Option{
+        https.Port(8080),
+        
+        https.OnStart(func() {
+            fmt.Println("Server started")
+        }),
+        
+        https.OnShutdown(func() {
+            fmt.Println("Cleaning up resources...")
+            // Close database connections
+            // Release other resources
+        }),
+        
+        https.OnExit(func() {
+            fmt.Println("Server process exiting")
+        }),
+        
+        https.Route(func(eng *gin.Engine) {
+            eng.GET("/shutdown", func(c *gin.Context) {
+                c.JSON(200, gin.H{"message": "Shutting down"})
+                go func() {
+                    time.Sleep(1 * time.Second)
+                    // Trigger shutdown
+                }()
+            })
+        }),
+    })
+    
+    server.Serve()
+}
+```
+
+## Best Practices
+
+1. **Use HTTPS in Production**: Always enable TLS/HTTPS for production deployments.
+
+2. **Configure Timeouts**: Set appropriate read, write, and idle timeouts to prevent resource exhaustion.
+
+3. **Enable CORS Carefully**: Only allow trusted origins in production environments.
+
+4. **Implement Rate Limiting**: Protect your API from abuse with rate limiting middleware.
+
+5. **Use Middleware Priority**: Order middleware correctly (authentication before business logic).
+
+6. **Log Important Events**: Log requests, errors, and important business events.
+
+7. **Handle Errors Gracefully**: Return meaningful error messages without exposing internal details.
+
+8. **Validate Input**: Always validate and sanitize user input.
+
+9. **Use Health Checks**: Implement health check endpoints for monitoring and load balancing.
+
+10. **Monitor Performance**: Track request latency, error rates, and resource usage.
+
+11. **Secure Sensitive Data**: Never log sensitive information like passwords or tokens.
+
+12. **Use Connection Pooling**: Reuse database and other resource connections.
+
+13. **Implement Circuit Breakers**: Add circuit breakers for external service calls.
+
+14. **Test Thoroughly**: Write comprehensive tests for your handlers and middleware.
+
+## Additional Resources
+
+- [Gin Framework Documentation](https://gin-gonic.com/docs/)
+- [Song Framework Documentation](../../README.md)
